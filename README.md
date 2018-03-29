@@ -31,7 +31,7 @@ bird which populates Sydney city.
 
 ## Installation
 
-### Basic requirements
+### Dependencies
 
 Ibis requires to have an Arch Linux system with the `base` package group
 installed. The Arch Linux installation guide is
