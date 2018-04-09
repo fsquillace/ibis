@@ -1,8 +1,5 @@
 #!/bin/sh
 
-################# OTHER SETTINGS ###########
-setxkbmap -layout us
-
 ############### SERVICES #############
 # D-Bus
 if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
@@ -23,8 +20,9 @@ urxvtd -q -f -o
 
 blueman-applet &
 
-### BOOT APPLICATIONS #######
-# Example boot app after 10 secs from startx:
-#sleep 10 & goldendict &> /dev/null &
+############# OTHER SETTINGS ###########
+# None
 
-exec awesome
+############# STARTUP APPLICATIONS #########
+# Example: startup app after 10 secs from startx
+#sleep 10 & goldendict &> /dev/null &
