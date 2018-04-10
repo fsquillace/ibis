@@ -1,7 +1,6 @@
-
 post_install() {
     # Install packages
-    sudo pacman --noconfirm -S $(cat $PEARL_PKGDIR/packages | xargs)
+    sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
 
     # Systemd services
     sudo systemctl start udisks2.service
@@ -12,8 +11,7 @@ post_install() {
 
     # Apply custom configurations
     mkdir -p $PEARL_PKGVARDIR/configs/
-    ask "Do you want to follow procedure for input configuration (i.e. mouse, keyboard, etc)?" "N" && \
-        _configure_input
+    _configure_input
 
     # Apply default configuration files
     apply "source $PEARL_PKGDIR/xinitrc" "$HOME/.xinitrc"
@@ -32,6 +30,22 @@ post_install() {
 
 _configure_input() {
     local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
+    local answers=("Create new" "Skip")
+    local default_answer="Skip"
+    [[ -e $xinitrc_input_file ]] && { \
+        answers+=("Apply existing")
+        default_answer="Apply existing"
+    }
+    local chosen=$(choose "Choose option about input configurations (i.e. mouse, keyboard, etc)" "${default_answer}" "${answers[@]}")
+
+    [[ $chosen == "Skip" ]] && { \
+        unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
+        return 0
+    }
+    [[ $chosen == "Apply existing" ]] && { \
+        apply "source $xinitrc_input_file" "$HOME/.xinitrc"
+        return 0
+    }
 
     info "More info about Keyboard config:"
     info "    https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg#Setting_keyboard_layout"
