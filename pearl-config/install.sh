@@ -8,6 +8,8 @@ post_install() {
     sudo systemctl start dbus.service
     sudo systemctl start bluetooth.service
     sudo systemctl enable bluetooth.service
+    sudo systemctl start ntpd.service
+    sudo systemctl enable ntpd.service
 
     # Apply custom configurations
     mkdir -p $PEARL_PKGVARDIR/configs/
@@ -94,6 +96,8 @@ pre_remove() {
     sudo systemctl stop dbus.service
     sudo systemctl stop bluetooth.service
     sudo systemctl disable bluetooth.service
+    sudo systemctl stop ntpd.service
+    sudo systemctl disable ntpd.service
 
     sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/packages | xargs)
     return 0
