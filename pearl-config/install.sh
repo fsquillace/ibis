@@ -1,5 +1,6 @@
 post_install() {
     # Install packages
+    sudo pacman --noconfirm -Syu
     sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
 
     # Systemd services
