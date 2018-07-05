@@ -14,7 +14,10 @@ post_install() {
 
     # Apply custom configurations
     mkdir -p $PEARL_PKGVARDIR/configs/
-    _configure_input
+
+    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
+    setup_configuration "$xinitrc_input_file" "_configure_input" \
+        "_apply_initrc" "_unapply_initrc"
 
     # Apply default configuration files
     apply "source $PEARL_PKGDIR/xinitrc" "$HOME/.xinitrc"
@@ -31,24 +34,18 @@ post_install() {
     return 0
 }
 
+_apply_initrc() {
+    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
+    apply "source $xinitrc_input_file" "$HOME/.xinitrc"
+}
+
+_unapply_initrc() {
+    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
+    unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
+}
+
 _configure_input() {
     local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
-    local answers=("Create new" "Skip")
-    local default_answer="Skip"
-    [[ -e $xinitrc_input_file ]] && { \
-        answers+=("Apply existing")
-        default_answer="Apply existing"
-    }
-    local chosen=$(choose "Choose option about input configurations (i.e. mouse, keyboard, etc)" "${default_answer}" "${answers[@]}")
-
-    [[ $chosen == "Skip" ]] && { \
-        unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
-        return 0
-    }
-    [[ $chosen == "Apply existing" ]] && { \
-        apply "source $xinitrc_input_file" "$HOME/.xinitrc"
-        return 0
-    }
 
     info "More info about Keyboard config:"
     info "    https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg#Setting_keyboard_layout"
@@ -77,8 +74,6 @@ _configure_input() {
         }
     done
 
-    apply "source $xinitrc_input_file" "$HOME/.xinitrc"
-
     return 0
 }
 
@@ -92,14 +87,18 @@ pre_remove() {
     unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
     unapply "source $PEARL_PKGDIR/xinitrc" "$HOME/.xinitrc"
 
-    sudo systemctl stop udisks2.service
-    sudo systemctl disable udisks2.service
-    sudo systemctl stop dbus.service
-    sudo systemctl stop bluetooth.service
-    sudo systemctl disable bluetooth.service
-    sudo systemctl stop ntpd.service
-    sudo systemctl disable ntpd.service
+    if ask "Do you want to shutdown the services and remove all the packages from Ibis?" "N"
+    then
+        sudo systemctl stop udisks2.service
+        sudo systemctl disable udisks2.service
+        sudo systemctl stop dbus.service
+        sudo systemctl stop bluetooth.service
+        sudo systemctl disable bluetooth.service
+        sudo systemctl stop ntpd.service
+        sudo systemctl disable ntpd.service
 
-    sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/packages | xargs)
+        sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/packages | xargs)
+    fi
+
     return 0
 }
