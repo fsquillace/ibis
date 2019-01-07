@@ -4,6 +4,8 @@ post_install() {
     sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
 
     # Systemd services
+    sudo systemctl start sshd.service
+    sudo systemctl enable sshd.service
     sudo systemctl start udisks2.service
     sudo systemctl enable udisks2.service
     sudo systemctl start dbus.service
@@ -89,6 +91,8 @@ pre_remove() {
 
     if ask "Do you want to shutdown the services and remove all the packages from Ibis?" "N"
     then
+        sudo systemctl stop sshd.service
+        sudo systemctl disable sshd.service
         sudo systemctl stop udisks2.service
         sudo systemctl disable udisks2.service
         sudo systemctl stop dbus.service

@@ -88,17 +88,17 @@ For the complete list of packages installed by Ibis take a look at [`packages`](
 - smplayer
 
 ### Compression
-- unrar
-- tar
-- zip/unzip
 - atool
 - p7zip
+- tar
+- unrar
+- zip/unzip
 
 ### Network tools
-- net-tools
-- wireless_tools
 - iw
+- net-tools
 - wget
+- wireless_tools
 - wpa_supplicant
 
 ### Office
@@ -109,20 +109,21 @@ For the complete list of packages installed by Ibis take a look at [`packages`](
 
 ### Terminal
 - rxvt-unicode
-- urxvt-perls
 - tmux
+- urxvt-perls
 
 ### Take screenshot
 - scrot
 
 ### System/Command line tools
-- sudo
-- rsync
-- highlight
-- openssh
 - bash-completion
+- highlight
 - imagemagick
+- openssh
+- pass
+- rsync
 - slock
+- sudo
 - w3m
 
 ## Troubleshooting
