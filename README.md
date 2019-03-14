@@ -117,6 +117,7 @@ For the complete list of packages installed by Ibis take a look at [`packages`](
 
 ### System/Command line tools
 - bash-completion
+- font-manager
 - highlight
 - imagemagick
 - openssh

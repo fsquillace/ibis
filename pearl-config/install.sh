@@ -1,7 +1,30 @@
+
+CURL="curl -L -J -O"
+
+_install_pkg_from_aur(){
+    local maindir=$(TMPDIR=/tmp mktemp -d -t ibis.XXXXXXXXXX)
+    local pkgname=$1
+    local installname=$2
+    builtin cd "${maindir}"
+
+    $CURL "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=${pkgname}"
+    [ -z "${installname}" ] || $CURL "https://aur.archlinux.org/cgit/aur.git/plain/${installname}?h=${pkgname}"
+    makepkg -sfcd
+    sudo pacman --noconfirm -U ${pkgname}*.pkg.tar.xz
+
+    builtin cd -
+    rm -rf "${maindir}"
+}
+
+
 post_install() {
     # Install packages
     sudo pacman --noconfirm -Syu
     sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
+    for aur_package in $(cat $PEARL_PKGDIR/aur-packages)
+    do
+        _install_pkg_from_aur "$aur_package"
+    done
 
     # Systemd services
     sudo systemctl start sshd.service
@@ -102,6 +125,7 @@ pre_remove() {
         sudo systemctl disable ntpd.service
 
         sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/packages | xargs)
+        sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/aur-packages | xargs)
     fi
 
     return 0
