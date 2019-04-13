@@ -1,18 +1,15 @@
 
-CURL="curl -L -J -O"
-
 _install_pkg_from_aur(){
-    local maindir=$(TMPDIR=/tmp mktemp -d -t ibis.XXXXXXXXXX)
     local pkgname=$1
-    local installname=$2
+    local maindir=$(TMPDIR=/tmp mktemp -d -t ibis.XXXXXXXXXX)
+    local origin_pwd="$PWD"
     builtin cd "${maindir}"
-
-    $CURL "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=${pkgname}"
-    [ -z "${installname}" ] || $CURL "https://aur.archlinux.org/cgit/aur.git/plain/${installname}?h=${pkgname}"
+    download "https://aur.archlinux.org/cgit/aur.git/snapshot/${pkgname}.tar.gz"
+    tar -xvzf ${pkgname}.tar.gz
+    builtin cd "${pkgname}"
     makepkg -sfcd
     sudo pacman --noconfirm -U ${pkgname}*.pkg.tar.xz
-
-    builtin cd -
+    builtin cd "$origin_pwd"
     rm -rf "${maindir}"
 }
 
@@ -21,10 +18,10 @@ post_install() {
     # Install packages
     sudo pacman --noconfirm -Syu
     sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
-    for aur_package in $(cat $PEARL_PKGDIR/aur-packages)
-    do
-        _install_pkg_from_aur "$aur_package"
-    done
+    while read aur_package; do
+        info "Installing $aur_package from AUR..."
+        _install_pkg_from_aur $aur_package
+    done < $PEARL_PKGDIR/aur-packages
 
     # Systemd services
     sudo systemctl start sshd.service
