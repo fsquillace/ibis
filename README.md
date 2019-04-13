@@ -18,7 +18,7 @@ text editor, audio/video player, etc. No other additional overhead is added into
 The system has been designed with the following principles in mind:
 
 - Identify the basic functionalities required;
-- Pick the packages which deliver a minimal solution for them;
+- Pick up the packages which deliver a minimal but complete solution for them;
 - Configure the packages to make them working out of the box;
 - Get an environment entirely reproducible via [Pearl](https://github.com/pearl-core/pearl) system.
 
@@ -67,7 +67,8 @@ pearl remove ibis
 
 Most of the applications are listed in the [Arch Linux wiki page](https://wiki.archlinux.org/index.php/list_of_applications).
 
-For the complete list of packages installed by Ibis take a look at [`packages`](packages) file.
+For the complete list of packages installed by Ibis take a look at
+[`packages`](packages) and [`aur-packages`](aur-packages) files.
 
 ### Window manager
 - awesome
@@ -81,6 +82,9 @@ For the complete list of packages installed by Ibis take a look at [`packages`](
 
 ### Text editor
 - gvim
+
+### Browser
+- firefox
 
 ### Video and sound
 - mate-media
