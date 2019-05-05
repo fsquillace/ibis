@@ -12,7 +12,9 @@ highlight
 imagemagick
 iw
 libreoffice-fresh
+libnotify
 mate-media
+meson
 net-tools
 ntp
 openssh
@@ -40,6 +42,7 @@ w3m
 wget
 wireless_tools
 wpa_supplicant
+xclip
 xorg
 zathura
 zathura-pdf-poppler

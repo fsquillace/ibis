@@ -18,10 +18,14 @@ post_install() {
     # Install packages
     sudo pacman --noconfirm -Syu
     sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
+
     while read aur_package; do
         info "Installing $aur_package from AUR..."
         _install_pkg_from_aur $aur_package
     done < $PEARL_PKGDIR/aur-packages
+
+    # Meson is only needed for font-manager as make dependency
+    sudo pacman --noconfirm -Rsn meson
 
     # Systemd services
     sudo systemctl start sshd.service
