@@ -5,8 +5,10 @@ bash-completion
 blueman
 bluez
 bluez-utils
+dmenu
 eom
-firefox
+entr
+fzf
 gvim
 highlight
 imagemagick
@@ -24,6 +26,7 @@ pinta
 psmisc
 pulseaudio
 pulseaudio-bluetooth
+qutebrowser
 ranger
 rsync
 rxvt-unicode
@@ -33,6 +36,8 @@ smplayer
 sudo
 tar
 tmux
+trash-cli
+transmission-cli
 udiskie
 udisks2
 unrar
@@ -44,6 +49,7 @@ wireless_tools
 wpa_supplicant
 xclip
 xorg
+youtube-dl
 zathura
 zathura-pdf-poppler
 zip

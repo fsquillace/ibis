@@ -13,19 +13,35 @@ _install_pkg_from_aur(){
     rm -rf "${maindir}"
 }
 
+_aur_setup() {
+    while read aur_package; do
+        if [[ "$aur_package" = "#"* ]]
+        then
+            info "Skipping package $aur_package ..."
+        else
+           info "Installing $aur_package from AUR..."
+            _install_pkg_from_aur $aur_package
+        fi
+    done < $PEARL_PKGDIR/aur-packages
+
+    return 0
+}
 
 post_install() {
     # Install packages
     sudo pacman --noconfirm -Syu
     sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
 
-    while read aur_package; do
-        info "Installing $aur_package from AUR..."
-        _install_pkg_from_aur $aur_package
-    done < $PEARL_PKGDIR/aur-packages
+    if ask "Do you want to install AUR packages?" "N"
+    then
+        _aur_setup
+    fi
 
     # Meson is only needed for font-manager as make dependency
     sudo pacman --noconfirm -Rsn meson
+
+    mkdir -p $HOME/.local/bin
+    _configure_qutebrowser
 
     # Systemd services
     sudo systemctl start sshd.service
@@ -37,6 +53,8 @@ post_install() {
     sudo systemctl enable bluetooth.service
     sudo systemctl start ntpd.service
     sudo systemctl enable ntpd.service
+    sudo systemctl start transmission.service
+    sudo systemctl enable transmission.service
 
     # Apply custom configurations
     mkdir -p $PEARL_PKGVARDIR/configs/
@@ -58,6 +76,20 @@ post_install() {
     info "    https://wiki.archlinux.org/index.php/bluetooth#Audio"
 
     return 0
+}
+
+_configure_qutebrowser() {
+    # Umpv is used together with qutebrowser for watching video:
+    # https://www.qutebrowser.org/doc/faq.html
+    cd $HOME/.local/bin
+    [[ -e umpv ]] && rm -rf umpv
+    download "https://github.com/mpv-player/mpv/raw/master/TOOLS/umpv"
+    chmod +x umpv
+    /usr/share/qutebrowser/scripts/dictcli.py install en-US
+    /usr/share/qutebrowser/scripts/dictcli.py install es-ES
+    /usr/share/qutebrowser/scripts/dictcli.py install it-IT
+
+    apply "exec(open('$PEARL_PKGDIR/qutebrowser_config.py').read())" $HOME/.config/qutebrowser/config.py
 }
 
 _apply_initrc() {
@@ -112,6 +144,8 @@ pre_remove() {
     local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
     unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
     unapply "source $PEARL_PKGDIR/xinitrc" "$HOME/.xinitrc"
+    [[ -e umpv ]] && rm -rf umpv
+    unapply "exec(open('$PEARL_PKGDIR/qutebrowser_config.py').read())" $HOME/.config/qutebrowser/config.py
 
     if ask "Do you want to shutdown the services and remove all the packages from Ibis?" "N"
     then
@@ -124,6 +158,8 @@ pre_remove() {
         sudo systemctl disable bluetooth.service
         sudo systemctl stop ntpd.service
         sudo systemctl disable ntpd.service
+        sudo systemctl stop transmission.service
+        sudo systemctl disable transmission.service
 
         sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/packages | xargs)
         sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/aur-packages | xargs)

@@ -85,6 +85,10 @@ For the complete list of packages installed by Ibis take a look at
 
 ### Browser
 - firefox
+- qutebrowser
+
+### BitTorrent client
+- transmission-cli
 
 ### Video and sound
 - mate-media
@@ -121,7 +125,9 @@ For the complete list of packages installed by Ibis take a look at
 
 ### System/Command line tools
 - bash-completion
+- entr
 - font-manager
+- fzf
 - highlight
 - imagemagick
 - openssh
@@ -129,6 +135,7 @@ For the complete list of packages installed by Ibis take a look at
 - rsync
 - slock
 - sudo
+- trash-cli
 - w3m
 
 ## Troubleshooting
