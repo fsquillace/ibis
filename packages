@@ -17,6 +17,8 @@ libreoffice-fresh
 libnotify
 mate-media
 meson
+mpd
+ncmpcpp
 net-tools
 ntp
 openssh

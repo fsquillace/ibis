@@ -1,4 +1,95 @@
 
+post_install() {
+    # Install packages
+    sudo pacman --noconfirm -Syu
+    sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
+
+    if ask "Do you want to install AUR packages?" "N"
+    then
+        _aur_setup
+    fi
+
+    # Meson is only needed for font-manager as make dependency
+    sudo pacman --noconfirm -Rsn meson
+
+    mkdir -p $HOME/.local/bin
+
+    _configure_gpg
+    _configure_qutebrowser
+    _configure_mpd
+
+    # Systemd services
+    sudo systemctl start sshd.service
+    sudo systemctl enable sshd.service
+    sudo systemctl start udisks2.service
+    sudo systemctl enable udisks2.service
+    sudo systemctl start dbus.service
+    sudo systemctl start bluetooth.service
+    sudo systemctl enable bluetooth.service
+    sudo systemctl start ntpd.service
+    sudo systemctl enable ntpd.service
+    sudo systemctl start transmission.service
+    sudo systemctl enable transmission.service
+
+    systemctl --user start mpd.service
+    systemctl --user enable mpd.service
+
+    # Apply custom configurations
+    mkdir -p $PEARL_PKGVARDIR/configs/
+
+    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
+    setup_configuration "$xinitrc_input_file" "_configure_input" \
+        "_apply_initrc" "_unapply_initrc"
+
+    # Apply default configuration files
+    apply "source $PEARL_PKGDIR/configs/xinitrc" "$HOME/.xinitrc"
+    # The following makes sure to place Awesome WM at the end
+    apply "exec awesome" "$HOME/.xinitrc" false
+
+    # Information and manual changes
+    info "Following steps requires manual changes"
+    info "  Setup bluetooth auto power-on:"
+    info "    https://wiki.archlinux.org/index.php/bluetooth#Auto_power-on_after_boot"
+    info "  Setup bluetooth audio:"
+    info "    https://wiki.archlinux.org/index.php/bluetooth#Audio"
+
+    return 0
+}
+
+_configure_qutebrowser() {
+    # Umpv is used together with qutebrowser for watching video:
+    # https://www.qutebrowser.org/doc/faq.html
+    cd $HOME/.local/bin
+    [[ -e umpv ]] && rm -rf umpv
+    download "https://github.com/mpv-player/mpv/raw/master/TOOLS/umpv"
+    chmod +x umpv
+    /usr/share/qutebrowser/scripts/dictcli.py install en-US
+    /usr/share/qutebrowser/scripts/dictcli.py install es-ES
+    /usr/share/qutebrowser/scripts/dictcli.py install it-IT
+
+    apply "exec(open('$PEARL_PKGDIR/configs/qutebrowser_config.py').read())" $HOME/.config/qutebrowser/config.py
+}
+
+_configure_mpd() {
+    # https://wiki.archlinux.org/index.php/Music_Player_Daemon
+    mkdir -p $HOME/.config/mpd/playlists
+    cp $PEARL_PKGDIR/configs/mpd.conf $HOME/.config/mpd/
+}
+
+_configure_gpg() {
+    cp $PEARL_PKGDIR/configs/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
+}
+
+_apply_initrc() {
+    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
+    apply "source $xinitrc_input_file" "$HOME/.xinitrc"
+}
+
+_unapply_initrc() {
+    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
+    unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
+}
+
 _install_pkg_from_aur(){
     local pkgname=$1
     local maindir=$(TMPDIR=/tmp mktemp -d -t ibis.XXXXXXXXXX)
@@ -25,81 +116,6 @@ _aur_setup() {
     done < $PEARL_PKGDIR/aur-packages
 
     return 0
-}
-
-post_install() {
-    # Install packages
-    sudo pacman --noconfirm -Syu
-    sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
-
-    if ask "Do you want to install AUR packages?" "N"
-    then
-        _aur_setup
-    fi
-
-    # Meson is only needed for font-manager as make dependency
-    sudo pacman --noconfirm -Rsn meson
-
-    mkdir -p $HOME/.local/bin
-    _configure_qutebrowser
-
-    # Systemd services
-    sudo systemctl start sshd.service
-    sudo systemctl enable sshd.service
-    sudo systemctl start udisks2.service
-    sudo systemctl enable udisks2.service
-    sudo systemctl start dbus.service
-    sudo systemctl start bluetooth.service
-    sudo systemctl enable bluetooth.service
-    sudo systemctl start ntpd.service
-    sudo systemctl enable ntpd.service
-    sudo systemctl start transmission.service
-    sudo systemctl enable transmission.service
-
-    # Apply custom configurations
-    mkdir -p $PEARL_PKGVARDIR/configs/
-
-    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
-    setup_configuration "$xinitrc_input_file" "_configure_input" \
-        "_apply_initrc" "_unapply_initrc"
-
-    # Apply default configuration files
-    apply "source $PEARL_PKGDIR/xinitrc" "$HOME/.xinitrc"
-    # The following makes sure to place Awesome WM at the end
-    apply "exec awesome" "$HOME/.xinitrc" false
-
-    # Information and manual changes
-    info "Following steps requires manual changes"
-    info "  Setup bluetooth auto power-on:"
-    info "    https://wiki.archlinux.org/index.php/bluetooth#Auto_power-on_after_boot"
-    info "  Setup bluetooth audio:"
-    info "    https://wiki.archlinux.org/index.php/bluetooth#Audio"
-
-    return 0
-}
-
-_configure_qutebrowser() {
-    # Umpv is used together with qutebrowser for watching video:
-    # https://www.qutebrowser.org/doc/faq.html
-    cd $HOME/.local/bin
-    [[ -e umpv ]] && rm -rf umpv
-    download "https://github.com/mpv-player/mpv/raw/master/TOOLS/umpv"
-    chmod +x umpv
-    /usr/share/qutebrowser/scripts/dictcli.py install en-US
-    /usr/share/qutebrowser/scripts/dictcli.py install es-ES
-    /usr/share/qutebrowser/scripts/dictcli.py install it-IT
-
-    apply "exec(open('$PEARL_PKGDIR/qutebrowser_config.py').read())" $HOME/.config/qutebrowser/config.py
-}
-
-_apply_initrc() {
-    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
-    apply "source $xinitrc_input_file" "$HOME/.xinitrc"
-}
-
-_unapply_initrc() {
-    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
-    unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
 }
 
 _configure_input() {
@@ -140,13 +156,6 @@ post_update() {
 }
 
 pre_remove() {
-    unapply "exec awesome" "$HOME/.xinitrc"
-    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
-    unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
-    unapply "source $PEARL_PKGDIR/xinitrc" "$HOME/.xinitrc"
-    [[ -e umpv ]] && rm -rf umpv
-    unapply "exec(open('$PEARL_PKGDIR/qutebrowser_config.py').read())" $HOME/.config/qutebrowser/config.py
-
     if ask "Do you want to shutdown the services and remove all the packages from Ibis?" "N"
     then
         sudo systemctl stop sshd.service
@@ -161,9 +170,22 @@ pre_remove() {
         sudo systemctl stop transmission.service
         sudo systemctl disable transmission.service
 
+        systemctl --user stop mpd.service
+        systemctl --user disable mpd.service
+
         sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/packages | xargs)
         sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/aur-packages | xargs)
     fi
+
+    [[ -e $HOME/.gnupg/gpg-agent.conf ]] && rm $HOME/.gnupg/gpg-agent.conf
+    [[ -e $HOME/.config/mpd/mpd.conf ]] && rm $HOME/.config/mpd/mpd.conf
+    unapply "exec awesome" "$HOME/.xinitrc"
+    local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
+    unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
+    unapply "source $PEARL_PKGDIR/configs/xinitrc" "$HOME/.xinitrc"
+    [[ -e umpv ]] && rm -rf umpv
+    unapply "exec(open('$PEARL_PKGDIR/configs/qutebrowser_config.py').read())" $HOME/.config/qutebrowser/config.py
+
 
     return 0
 }

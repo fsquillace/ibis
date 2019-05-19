@@ -84,7 +84,6 @@ For the complete list of packages installed by Ibis take a look at
 - gvim
 
 ### Browser
-- firefox
 - qutebrowser
 
 ### BitTorrent client
@@ -92,6 +91,8 @@ For the complete list of packages installed by Ibis take a look at
 
 ### Video and sound
 - mate-media
+- mpd
+- ncmpcpp
 - pulseaudio
 - smplayer
 
