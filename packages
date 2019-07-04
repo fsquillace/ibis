@@ -50,7 +50,7 @@ wget
 wireless_tools
 wpa_supplicant
 xclip
-xorg
+xorg-xinit
 youtube-dl
 zathura
 zathura-pdf-poppler
