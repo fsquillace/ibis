@@ -77,6 +77,7 @@ _configure_mpd() {
 }
 
 _configure_gpg() {
+    mkdir -p $HOME/.gnupg
     cp $PEARL_PKGDIR/configs/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
 }
 
