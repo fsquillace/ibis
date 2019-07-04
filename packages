@@ -51,6 +51,7 @@ wireless_tools
 wpa_supplicant
 xclip
 xorg-xinit
+xorg-server
 youtube-dl
 zathura
 zathura-pdf-poppler
