@@ -1,4 +1,6 @@
+acpi
 arandr
+ario
 atool
 awesome
 bash-completion
@@ -18,12 +20,13 @@ libnotify
 mate-media
 meson
 mpd
-ncmpcpp
+neofetch
 net-tools
 ntp
 openssh
 p7zip
 pass
+pdfjs
 pinta
 psmisc
 pulseaudio

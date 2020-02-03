@@ -1,16 +1,30 @@
 
 post_install() {
+    sudo cp ${PEARL_PKGDIR}/configs/sudoers /etc/sudoers.d/01_myarch
+    sudo chown root:root /etc/sudoers.d/01_myarch
+    sudo chmod 440 /etc/sudoers.d/01_myarch
+
+    warn "Overriding file for setting up bluetooth: /etc/bluetooth/main.conf"
+    sudo cp ${PEARL_PKGDIR}/configs/bluetooth-main.conf /etc/bluetooth/main.conf
+
+    if ask "Do you want to perform initial setup for Arch Linux?" "N"
+    then
+        ls /usr/share/zoneinfo/*/*
+        local region=$(input "Choose one of the time zone above (i.e. Europe/Madrid)" "UTC")
+        sudo ln -sf /usr/share/zoneinfo/$region /etc/localtime
+    fi
+
     # Install packages
     sudo pacman --noconfirm -Syu
     sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
 
-    if ask "Do you want to install AUR packages?" "N"
+    info "Installing yay..."
+    _install_yay
+
+    if ask "Do you want to install AUR packages in ibis?" "N"
     then
         _aur_setup
     fi
-
-    # Meson is only needed for font-manager as make dependency
-    sudo pacman --noconfirm -Rsn meson
 
     mkdir -p $HOME/.local/bin
 
@@ -19,6 +33,7 @@ post_install() {
     _configure_mpd
 
     # Systemd services
+    sudo systemctl daemon-reload
     sudo systemctl start sshd.service
     sudo systemctl enable sshd.service
     sudo systemctl start udisks2.service
@@ -31,6 +46,7 @@ post_install() {
     sudo systemctl start transmission.service
     sudo systemctl enable transmission.service
 
+    systemctl --user daemon-reload
     systemctl --user start mpd.service
     systemctl --user enable mpd.service
 
@@ -48,8 +64,6 @@ post_install() {
 
     # Information and manual changes
     info "Following steps requires manual changes"
-    info "  Setup bluetooth auto power-on:"
-    info "    https://wiki.archlinux.org/index.php/bluetooth#Auto_power-on_after_boot"
     info "  Setup bluetooth audio:"
     info "    https://wiki.archlinux.org/index.php/bluetooth#Audio"
 
@@ -78,6 +92,7 @@ _configure_mpd() {
 
 _configure_gpg() {
     mkdir -p $HOME/.gnupg
+    [[ -f $HOME/.gnupg/gpg-agent.conf ]] && backup $HOME/.gnupg/gpg-agent.conf
     cp $PEARL_PKGDIR/configs/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
 }
 
@@ -105,6 +120,13 @@ _install_pkg_from_aur(){
     rm -rf "${maindir}"
 }
 
+_install_yay(){
+    sudo pacman --noconfirm -S git go
+    _install_pkg_from_aur yay
+    sudo pacman --noconfirm -Rsn go
+
+}
+
 _aur_setup() {
     while read aur_package; do
         if [[ "$aur_package" = "#"* ]]
@@ -112,9 +134,12 @@ _aur_setup() {
             info "Skipping package $aur_package ..."
         else
            info "Installing $aur_package from AUR..."
-            _install_pkg_from_aur $aur_package
+           yay --noconfirm -S $aur_package
         fi
     done < $PEARL_PKGDIR/aur-packages
+
+    # Meson is only needed for font-manager as make dependency
+    sudo pacman --noconfirm -Rsn meson
 
     return 0
 }
@@ -130,14 +155,16 @@ _configure_input() {
 
     info "More info about how to config mouse acceleration:"
     info "    https://wiki.archlinux.org/index.php/Mouse_acceleration"
+    info "More info about libinput:"
+    info "    https://wiki.archlinux.org/index.php/Libinput#Via_xinput"
     echo "" > "$xinitrc_input_file"
     while ask "Do you want to configure additional input?" "N"
     do
         xinput list
-        local input_name=$(input "Provide one of the input hardware string name (Enter to skip)" "")
+        local input_name=$(input "Provide one of the input hardware string name or id (Enter to skip)" "")
         [[ -z $input_name ]] && continue
         xinput --list-props "$input_name"
-        local prop_name=$(input "Provide the property string to configure (Enter to skip)" "")
+        local prop_name=$(input "Provide the property string or code to configure (Enter to skip)" "")
         [[ -z $prop_name ]] && continue
         local value=$(input "Provide the property value (Enter to skip)" "")
         [[ -z $value ]] && continue

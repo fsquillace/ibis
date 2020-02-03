@@ -1,0 +1,122 @@
+# /etc/sudoers
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# See the man page for details on how to write a sudoers file (man sudoers).
+
+##########################################################
+# Defaults specification
+#########################################################
+# Reset environment by default
+Defaults      !env_reset
+
+# To keep variable environment. It's useless if env_reset is disabled
+#Defaults      env_keep+="PYTHONPATH"
+
+# Set default EDITOR to vim, and do not allow visudo to use EDITOR/VISUAL.
+Defaults !env_editor, editor="/usr/bin/vim:/usr/bin/vi:/usr/bin/nano"
+
+# Warning: This will let any process use your sudo session:
+Defaults !tty_tickets
+
+Defaults insults
+
+# If you want to run administrative commands (those in /sbin or /usr/sbin) with sudo without using their full path
+#Defaults secure_path="/bin:/sbin:/usr/bin:/usr/sbin"
+
+Defaults !requiretty, !umask
+Defaults visiblepw, path_info, insults, lecture=always
+
+# By default sudo log to syslog
+#Defaults loglinelen = 0, logfile =/var/log/sudo.log, log_year, log_host, syslog=auth
+
+#Defaults mailto=youremail@email.com, mail_badpass, mail_no_user, mail_no_perms
+
+Defaults passwd_tries = 3, passwd_timeout = 1
+
+# The following option will change HOME and USER variables to the target user (usually root).
+#It's better to be commented
+#Defaults always_set_home, set_home, set_logname
+
+# Password lasts 30 min
+Defaults timestamp_timeout=30
+
+#Defaults passprompt="Sudo invoked by [%u] on [%H] - Cmd run as %U - Password for user %p:"
+Defaults passprompt="%u@%H --> %U@%H - Password for %p:"
+
+Defaults:%admin    lecture=once
+#Defaults:millert       !authenticate
+#Defaults@SERVERS       log_year, logfile=/var/log/sudo.log
+
+##########################################################
+# Host alias specification
+#########################################################
+## Groups of machines. These may include host names (optionally with wildcards),
+## IP addresses, network numbers or netgroups.
+#Host_Alias      WEBSERVERS = www1, www2, www3
+#Host_Alias      CUNETS = 128.138.0.0/255.255.0.0
+#Host_Alias      CSNETS = 128.138.243.0, 128.138.204.0/24, 128.138.242.0
+#Host_Alias      SERVERS = quadcluster.dsic.upv.es, golub.dsic.upv.es
+
+##########################################################
+# User alias specification
+#########################################################
+## Groups of users.  These may consist of user names, uids, Unix groups,
+## or netgroups.
+# User_Alias     ADMINS = millert, dowdy, mikef
+
+#########################################################
+# Runas alias specification
+########################################################
+#Runas_AliasOP = root, operator
+
+
+#########################################################
+# Cmnd alias specification
+########################################################
+## Groups of commands.  Often used to group related commands together.
+Cmnd_Alias  ARCHLINUX = /sbin/cfdisk, /usr/bin/pacman, /usr/bin/pacman-key, /usr/bin/yaourt, /usr/bin/makepkg
+
+Cmnd_Alias  SYSTEMD = /usr/bin/systemctl, /usr/bin/machinectl, /usr/bin/journalctl
+
+Cmnd_Alias  NET = /usr/bin/netctl, /usr/bin/wifi-menu
+
+Cmnd_Alias  PROCESSES = /bin/kill, /usr/bin/renice, /usr/bin/nice, /usr/bin/ionice, /usr/bin/top, /usr/bin/kill, /usr/bin/killall, /usr/bin/ps, /usr/bin/pkill
+
+Cmnd_Alias  MOUNT = /sbin/mount, /sbin/umount
+
+Cmnd_Alias  PRINTING = /usr/sbin/lpc, /usr/bin/lprm
+
+Cmnd_Alias  POWER =  /sbin/shutdown, /sbin/halt, /usr/sbin/fasthalt, /sbin/reboot, /usr/sbin/fastboot, /sbin/poweroff, /usr/sbin/hibernate, /usr/sbin/hibernate-disk, /usr/sbin/hibernate-ram
+
+Cmnd_Alias  SHELLS = /usr/bin/sh, /usr/bin/csh, /usr/bin/ksh, \
+            /usr/local/bin/tcsh, /usr/bin/rsh, /usr/local/bin/zsh
+
+Cmnd_Alias  SU = /usr/bin/su
+
+Cmnd_Alias  ADMIN = /usr/bin/gpasswd, /usr/bin/addgroup, /usr/bin/adduser, \
+                    /usr/bin/chmod, /usr/bin/chown, /usr/bin/chgrp, /usr/bin/chroot, \
+                    /usr/sbin/vipw, /usr/bin/passwd, /usr/bin/chsh, /usr/bin/chfn
+
+Cmnd_Alias  CDROM = /sbin/mount -o nosuid\,nodev /dev/cdrom /mnt/cdrom, /sbin/umount /mnt/cdrom
+##################################################
+# User privilege specification
+#################################################
+root	ALL=(ALL) ALL
+
+##################################################
+# Group privilege specification
+##################################################
+
+# Allow members of group sudo to execute any command
+# (Note that later entries override this, so you might need to move
+# it further down)
+%sudo ALL=(ALL) ALL
+
+# Members of the admin group may gain root privileges
+%admin ALL=(ALL) ALL, NOPASSWD: NET, NOPASSWD: ARCHLINUX, NOPASSWD: MOUNT, NOPASSWD: POWER, NOPASSWD: SYSTEMD, NOPASSWD: ADMIN
+
+# Group users has limited permissions
+%users localhost=(users) ALL, !SU, NET, POWER
+%users  ALL=/sbin/mount /cdrom,/sbin/umount /cdrom
+%users  localhost=/sbin/shutdown -h now

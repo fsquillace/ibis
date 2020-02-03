@@ -92,7 +92,7 @@ For the complete list of packages installed by Ibis take a look at
 ### Video and sound
 - mate-media
 - mpd
-- ncmpcpp
+- ario
 - pulseaudio
 - smplayer
 
@@ -138,6 +138,7 @@ For the complete list of packages installed by Ibis take a look at
 - sudo
 - trash-cli
 - w3m
+- yay
 
 ## Troubleshooting
 This section has been left blank intentionally.
