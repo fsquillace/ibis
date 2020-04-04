@@ -25,6 +25,7 @@ net-tools
 ntp
 openssh
 p7zip
+pacman-contrib
 pass
 pdfjs
 pinta

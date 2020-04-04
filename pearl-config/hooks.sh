@@ -4,6 +4,9 @@ post_install() {
     sudo chown root:root /etc/sudoers.d/01_myarch
     sudo chmod 440 /etc/sudoers.d/01_myarch
 
+    sudo cp ${PEARL_PKGDIR}/configs/journald.conf /etc/systemd/journald.conf
+    sudo chown root:root /etc/systemd/journald.conf
+
     warn "Overriding file for setting up bluetooth: /etc/bluetooth/main.conf"
     sudo cp ${PEARL_PKGDIR}/configs/bluetooth-main.conf /etc/bluetooth/main.conf
 
@@ -45,6 +48,12 @@ post_install() {
     sudo systemctl enable ntpd.service
     sudo systemctl start transmission.service
     sudo systemctl enable transmission.service
+
+    # https://wiki.archlinux.org/index.php/Pacman#Cleaning_the_package_cache
+    sudo systemctl start paccache.timer
+    sudo systemctl enable paccache.timer
+
+    sudo systemctl restart systemd-journald
 
     systemctl --user daemon-reload
     systemctl --user start mpd.service
