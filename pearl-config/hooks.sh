@@ -8,6 +8,7 @@ post_install() {
     sudo chown root:root /etc/systemd/journald.conf
 
     warn "Overriding file for setting up bluetooth: /etc/bluetooth/main.conf"
+    sudo mkdir -p /etc/bluetooth/
     sudo cp ${PEARL_PKGDIR}/configs/bluetooth-main.conf /etc/bluetooth/main.conf
 
     if ask "Do you want to perform initial setup for Arch Linux?" "N"
@@ -15,16 +16,36 @@ post_install() {
         ls /usr/share/zoneinfo/*/*
         local region=$(input "Choose one of the time zone above (i.e. Europe/Madrid)" "UTC")
         sudo ln -sf /usr/share/zoneinfo/$region /etc/localtime
+
+        local locale=$(input "Choose locale" "en_US")
+        local encode=$(input "Choose encode" "UTF-8")
+        local hostname=$(input "Hostname" "myarch")
+
+        sudo sh -c "
+        $(declare -f apply)
+        $(declare -f check_not_null)
+        apply '${locale}.${encode} ${encode}' /etc/locale.gen false
+        locale-gen
+        echo 'LANG=${locale}.${encode}' > /etc/locale.conf
+        echo '$hostname' > /etc/hostname
+        apply '127.0.0.1    localhost' /etc/hosts false
+        apply '::1          localhost' /etc/hosts false
+        apply '127.0.1.1    ${hostname}.localdomain  ${hostname}' /etc/hosts false
+        hwclock --systohc
+        "
+
     fi
 
     # Install packages
     sudo pacman --noconfirm -Syu
     sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
+    # base-devel is essential for building AUR packages
+    sudo pacman --noconfirm -S base-devel
 
     info "Installing yay..."
     _install_yay
 
-    if ask "Do you want to install AUR packages in ibis?" "N"
+    if ask "Do you want to install AUR packages in ibis?" "Y"
     then
         _aur_setup
     fi
