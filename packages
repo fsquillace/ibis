@@ -7,6 +7,8 @@ bash-completion
 blueman
 bluez
 bluez-utils
+borg
+borgmatic
 dmenu
 eom
 entr
@@ -17,6 +19,7 @@ imagemagick
 iw
 libreoffice-fresh
 libnotify
+man-db
 mate-media
 meson
 mpd
@@ -55,6 +58,7 @@ wireless_tools
 wpa_supplicant
 xclip
 xorg-xinit
+xorg-xinput
 xorg-server
 youtube-dl
 zathura

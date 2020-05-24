@@ -121,8 +121,12 @@ For the complete list of packages installed by Ibis take a look at
 - tmux
 - urxvt-perls
 
-### Take screenshot
+### Screenshot capture
 - scrot
+
+### Backup tools
+- borg
+- borgmatic
 
 ### System/Command line tools
 - bash-completion

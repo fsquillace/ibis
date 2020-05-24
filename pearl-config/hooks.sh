@@ -3,6 +3,8 @@ post_install() {
     sudo cp ${PEARL_PKGDIR}/configs/sudoers /etc/sudoers.d/01_myarch
     sudo chown root:root /etc/sudoers.d/01_myarch
     sudo chmod 440 /etc/sudoers.d/01_myarch
+    sudo groupadd -f admin
+    sudo gpasswd -a $USER admin
 
     sudo cp ${PEARL_PKGDIR}/configs/journald.conf /etc/systemd/journald.conf
     sudo chown root:root /etc/systemd/journald.conf
