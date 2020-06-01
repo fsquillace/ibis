@@ -124,9 +124,10 @@ For the complete list of packages installed by Ibis take a look at
 ### Screenshot capture
 - scrot
 
-### Backup tools
+### Backup/sync tools
 - borg
 - borgmatic
+- rsync
 
 ### System/Command line tools
 - bash-completion
@@ -137,7 +138,6 @@ For the complete list of packages installed by Ibis take a look at
 - imagemagick
 - openssh
 - pass
-- rsync
 - slock
 - sudo
 - trash-cli
