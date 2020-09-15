@@ -79,6 +79,8 @@ Cmnd_Alias  ARCHLINUX = /sbin/cfdisk, /usr/bin/pacman, /usr/bin/pacman-key, /usr
 
 Cmnd_Alias  SYSTEMD = /usr/bin/systemctl, /usr/bin/machinectl, /usr/bin/journalctl
 
+Cmnd_Alias  SLOCK = /usr/bin/slock
+
 Cmnd_Alias  NET = /usr/bin/netctl, /usr/bin/wifi-menu
 
 Cmnd_Alias  PROCESSES = /bin/kill, /usr/bin/renice, /usr/bin/nice, /usr/bin/ionice, /usr/bin/top, /usr/bin/kill, /usr/bin/killall, /usr/bin/ps, /usr/bin/pkill
@@ -114,7 +116,7 @@ root	ALL=(ALL) ALL
 %sudo ALL=(ALL) ALL
 
 # Members of the admin group may gain root privileges
-%admin ALL=(ALL) ALL, NOPASSWD: NET, NOPASSWD: ARCHLINUX, NOPASSWD: MOUNT, NOPASSWD: POWER, NOPASSWD: SYSTEMD, NOPASSWD: ADMIN
+%admin ALL=(ALL) ALL, NOPASSWD: NET, NOPASSWD: ARCHLINUX, NOPASSWD: MOUNT, NOPASSWD: POWER, NOPASSWD: SYSTEMD, NOPASSWD: ADMIN, NOPASSWD: SLOCK
 
 # Group users has limited permissions
 %users localhost=(users) ALL, !SU, NET, POWER

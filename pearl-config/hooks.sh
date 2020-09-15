@@ -147,7 +147,7 @@ _install_pkg_from_aur(){
     tar -xvzf ${pkgname}.tar.gz
     builtin cd "${pkgname}"
     makepkg -sfcd
-    sudo pacman --noconfirm -U ${pkgname}*.pkg.tar.xz
+    sudo pacman --noconfirm -U ${pkgname}*.pkg.tar.*
     builtin cd "$origin_pwd"
     rm -rf "${maindir}"
 }
