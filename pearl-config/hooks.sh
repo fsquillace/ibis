@@ -246,6 +246,5 @@ pre_remove() {
     [[ -e umpv ]] && rm -rf umpv
     unapply "exec(open('$PEARL_PKGDIR/configs/qutebrowser_config.py').read())" $HOME/.config/qutebrowser/config.py
 
-
     return 0
 }
