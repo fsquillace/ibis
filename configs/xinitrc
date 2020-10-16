@@ -20,6 +20,8 @@ urxvtd -q -f -o
 
 blueman-applet &
 
+dunst &
+
 ############# OTHER SETTINGS ###########
 # None
 

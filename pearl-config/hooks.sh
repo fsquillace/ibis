@@ -1,86 +1,91 @@
 
 post_install() {
-    sudo cp ${PEARL_PKGDIR}/configs/sudoers /etc/sudoers.d/01_myarch
-    sudo chown root:root /etc/sudoers.d/01_myarch
-    sudo chmod 440 /etc/sudoers.d/01_myarch
-    sudo groupadd -f admin
-    sudo gpasswd -a $USER admin
+    #sudo cp ${PEARL_PKGDIR}/configs/sudoers /etc/sudoers.d/01_myarch
+    #sudo chown root:root /etc/sudoers.d/01_myarch
+    #sudo chmod 440 /etc/sudoers.d/01_myarch
+    #sudo groupadd -f admin
+    #sudo gpasswd -a $USER admin
 
-    sudo cp ${PEARL_PKGDIR}/configs/journald.conf /etc/systemd/journald.conf
-    sudo chown root:root /etc/systemd/journald.conf
+    #sudo cp ${PEARL_PKGDIR}/configs/journald.conf /etc/systemd/journald.conf
+    #sudo chown root:root /etc/systemd/journald.conf
 
-    warn "Overriding file for setting up bluetooth: /etc/bluetooth/main.conf"
-    sudo mkdir -p /etc/bluetooth/
-    sudo cp ${PEARL_PKGDIR}/configs/bluetooth-main.conf /etc/bluetooth/main.conf
+    #warn "Overriding file for setting up bluetooth: /etc/bluetooth/main.conf"
+    #sudo mkdir -p /etc/bluetooth/
+    #sudo cp ${PEARL_PKGDIR}/configs/bluetooth-main.conf /etc/bluetooth/main.conf
 
-    if ask "Do you want to perform initial setup for Arch Linux?" "N"
-    then
-        ls /usr/share/zoneinfo/*/*
-        local region=$(input "Choose one of the time zone above (i.e. Europe/Madrid)" "UTC")
-        sudo ln -sf /usr/share/zoneinfo/$region /etc/localtime
+    #if ask "Do you want to perform initial setup for Arch Linux?" "N"
+    #then
+        #ls /usr/share/zoneinfo/*/*
+        #local region=$(input "Choose one of the time zone above (i.e. Europe/Madrid)" "UTC")
+        #sudo ln -sf /usr/share/zoneinfo/$region /etc/localtime
 
-        local locale=$(input "Choose locale" "en_US")
-        local encode=$(input "Choose encode" "UTF-8")
-        local hostname=$(input "Hostname" "myarch")
+        #local locale=$(input "Choose locale" "en_US")
+        #local encode=$(input "Choose encode" "UTF-8")
+        #local hostname=$(input "Hostname" "myarch")
 
-        sudo sh -c "
-        $(declare -f apply)
-        $(declare -f check_not_null)
-        apply '${locale}.${encode} ${encode}' /etc/locale.gen false
-        locale-gen
-        echo 'LANG=${locale}.${encode}' > /etc/locale.conf
-        echo '$hostname' > /etc/hostname
-        apply '127.0.0.1    localhost' /etc/hosts false
-        apply '::1          localhost' /etc/hosts false
-        apply '127.0.1.1    ${hostname}.localdomain  ${hostname}' /etc/hosts false
-        hwclock --systohc
-        "
+        #sudo sh -c "
+        #$(declare -f apply)
+        #$(declare -f check_not_null)
+        #apply '${locale}.${encode} ${encode}' /etc/locale.gen false
+        #locale-gen
+        #echo 'LANG=${locale}.${encode}' > /etc/locale.conf
+        #echo '$hostname' > /etc/hostname
+        #apply '127.0.0.1    localhost' /etc/hosts false
+        #apply '::1          localhost' /etc/hosts false
+        #apply '127.0.1.1    ${hostname}.localdomain  ${hostname}' /etc/hosts false
+        #hwclock --systohc
+        #"
 
-    fi
+    #fi
 
-    # Install packages
-    sudo pacman --noconfirm -Syu
-    sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
-    # base-devel is essential for building AUR packages
-    sudo pacman --noconfirm -S base-devel
+    ## Install packages
+    #sudo pacman --noconfirm -Syu
+    #sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
+    ## base-devel is essential for building AUR packages
+    #sudo pacman --noconfirm -S base-devel
 
-    info "Installing yay..."
-    _install_yay
+    #info "Installing yay..."
+    #_install_yay
 
-    if ask "Do you want to install AUR packages in ibis?" "Y"
-    then
-        _aur_setup
-    fi
+    #if ask "Do you want to install AUR packages in ibis?" "Y"
+    #then
+        #_aur_setup
+    #fi
 
     mkdir -p $HOME/.local/bin
 
-    _configure_gpg
-    _configure_qutebrowser
-    _configure_mpd
+    _configure_rofi
+    _configure_dunst
+    _configure_polybar
+    _configure_bspwm
+    _configure_ncmpcpp
+    #_configure_gpg
+    #_configure_qutebrowser
+    #_configure_mpd
 
-    # Systemd services
-    sudo systemctl daemon-reload
-    sudo systemctl start sshd.service
-    sudo systemctl enable sshd.service
-    sudo systemctl start udisks2.service
-    sudo systemctl enable udisks2.service
-    sudo systemctl start dbus.service
-    sudo systemctl start bluetooth.service
-    sudo systemctl enable bluetooth.service
-    sudo systemctl start ntpd.service
-    sudo systemctl enable ntpd.service
-    sudo systemctl start transmission.service
-    sudo systemctl enable transmission.service
+    ## Systemd services
+    #sudo systemctl daemon-reload
+    #sudo systemctl start sshd.service
+    #sudo systemctl enable sshd.service
+    #sudo systemctl start udisks2.service
+    #sudo systemctl enable udisks2.service
+    #sudo systemctl start dbus.service
+    #sudo systemctl start bluetooth.service
+    #sudo systemctl enable bluetooth.service
+    #sudo systemctl start ntpd.service
+    #sudo systemctl enable ntpd.service
+    #sudo systemctl start transmission.service
+    #sudo systemctl enable transmission.service
 
-    # https://wiki.archlinux.org/index.php/Pacman#Cleaning_the_package_cache
-    sudo systemctl start paccache.timer
-    sudo systemctl enable paccache.timer
+    ## https://wiki.archlinux.org/index.php/Pacman#Cleaning_the_package_cache
+    #sudo systemctl start paccache.timer
+    #sudo systemctl enable paccache.timer
 
-    sudo systemctl restart systemd-journald
+    #sudo systemctl restart systemd-journald
 
-    systemctl --user daemon-reload
-    systemctl --user start mpd.service
-    systemctl --user enable mpd.service
+    #systemctl --user daemon-reload
+    #systemctl --user start mpd.service
+    #systemctl --user enable mpd.service
 
     # Apply custom configurations
     mkdir -p $PEARL_PKGVARDIR/configs/
@@ -91,8 +96,9 @@ post_install() {
 
     # Apply default configuration files
     apply "source $PEARL_PKGDIR/configs/xinitrc" "$HOME/.xinitrc"
-    # The following makes sure to place Awesome WM at the end
-    apply "exec awesome" "$HOME/.xinitrc" false
+    # The following makes sure to place BSP WM at the end
+    #apply "exec awesome" "$HOME/.xinitrc" false
+    apply "exec bspwm" "$HOME/.xinitrc" false
 
     # Information and manual changes
     info "Following steps requires manual changes"
@@ -100,6 +106,56 @@ post_install() {
     info "    https://wiki.archlinux.org/index.php/bluetooth#Audio"
 
     return 0
+}
+
+_configure_ncmpcpp() {
+    mkdir -p $HOME/.config/ncmpcpp/lyrics
+    link_to $PEARL_PKGDIR/configs/ncmpcpp-bindings $HOME/.config/ncmpcpp/bindings
+    link_to $PEARL_PKGDIR/configs/ncmpcpp-config $HOME/.config/ncmpcpp/config
+}
+
+_configure_rofi() {
+    mkdir -p $HOME/.config/rofi
+
+    touch $HOME/.config/rofi/config.rasi
+    backup $HOME/.config/rofi/config.rasi
+    rm -f $HOME/.config/rofi/config.rasi
+    link_to $PEARL_PKGDIR/configs/rofi-config.rasi $HOME/.config/rofi/config.rasi
+}
+
+_configure_dunst() {
+    mkdir -p $HOME/.config/dunst
+
+    touch $HOME/.config/dunst/dunstrc
+    backup $HOME/.config/dunst/dunstrc
+    rm -f $HOME/.config/dunst/dunstrc
+    link_to $PEARL_PKGDIR/configs/dunstrc $HOME/.config/dunst/dunstrc
+}
+
+_configure_polybar() {
+    mkdir -p $HOME/.config/polybar
+
+    apply "include-file = $PEARL_PKGDIR/configs/polybar-config" $HOME/.config/polybar/config
+    apply "[section/base]" $HOME/.config/polybar/config
+
+    link_to  $PEARL_PKGDIR/configs/launch-polybar.sh $HOME/.config/polybar/launch.sh
+    cp -R $PEARL_PKGDIR/configs/scripts $HOME/.config/polybar/
+}
+
+# TODO remember to unapply everything
+
+_configure_bspwm() {
+    mkdir -p $HOME/.config/bspwm
+    apply "source $PEARL_PKGDIR/configs/bspwmrc" $HOME/.config/bspwm/bspwmrc
+    apply "#!/bin/bash" $HOME/.config/bspwm/bspwmrc
+    chmod +x $HOME/.config/bspwm/bspwmrc
+
+    mkdir -p $HOME/.config/sxhkd
+
+    touch $HOME/.config/sxhkd/sxhkdrc
+    backup $HOME/.config/sxhkd/sxhkdrc
+    rm -f $HOME/.config/sxhkd/sxhkdrc
+    link_to $PEARL_PKGDIR/configs/sxhkdrc $HOME/.config/sxhkd/sxhkdrc
 }
 
 _configure_qutebrowser() {
@@ -239,7 +295,7 @@ pre_remove() {
 
     [[ -e $HOME/.gnupg/gpg-agent.conf ]] && rm $HOME/.gnupg/gpg-agent.conf
     [[ -e $HOME/.config/mpd/mpd.conf ]] && rm $HOME/.config/mpd/mpd.conf
-    unapply "exec awesome" "$HOME/.xinitrc"
+    unapply "exec bspwm" "$HOME/.xinitrc"
     local xinitrc_input_file="$PEARL_PKGVARDIR/configs/xinitrc-input"
     unapply "source $xinitrc_input_file" "$HOME/.xinitrc"
     unapply "source $PEARL_PKGDIR/configs/xinitrc" "$HOME/.xinitrc"

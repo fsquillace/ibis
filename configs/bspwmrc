@@ -1,0 +1,69 @@
+#!/bin/bash
+
+########################
+## General
+########################
+
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+if type "xrandr"; then
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    bspc monitor $m -d term web media games code docs misc
+  done
+else
+    bspc monitor -d term web media games code docs misc
+fi
+
+
+bspc config border_width         2
+bspc config window_gap          12
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+########################
+## Rules
+########################
+
+# To create a rule for a given window you need to get either the WM class or name:
+# * Run `xprop` command
+# * Click the window
+# * Use the properties WM_NAME or WM_CLASS to build the rules
+
+# Terminal applications
+bspc rule -a URxvt desktop='term' follow=on
+
+# Web applications
+bspc rule -a chromium desktop='web'
+bspc rule -a Firefox desktop='web' follow=on
+bspc rule -a 'google-chrome' desktop='web' follow=on
+bspc rule -a 'Google-chrome' desktop='web' follow=on
+bspc rule -a Dwb desktop='web'
+bspc rule -a qutebrowser desktop='web'
+
+# Media applications
+bspc rule -a mplayer2 state=floating desktop='media'
+bspc rule -a smplayer state=floating desktop='media'
+bspc rule -a MPlayer state=floating desktop='media'
+bspc rule -a Gimp desktop='media' state=floating follow=on
+bspc rule -a Pinta desktop='media' follow=on
+bspc rule -a 'Vlc' desktop='media' follow=on
+bspc rule -a vlc desktop='media' follow=on
+
+# Code applications
+bspc rule -a Atom desktop='code' follow=on
+bspc rule -a Code desktop='code' follow=on
+bspc rule -a 'jetbrains-studio' desktop='code' follow=on
+bspc rule -a 'jetbrains-idea-ce' desktop='code' follow=on
+bspc rule -a 'NetBeans IDE 8.2' desktop='code' follow=on
+bspc rule -a 'java-lang-Thread' desktop='code' follow=on
+
+# Doc applications
+bspc rule -a libreoffice desktop='docs'
+
+# Games applications
+bspc rule -a 'Steam' desktop='games'
+bspc rule -a 'streamlink-twitch-gui' desktop='games' follow=on
+
+$HOME/.config/polybar/launch.sh
