@@ -1,6 +1,5 @@
 acpi
 arandr
-ario
 atool
 bash-completion
 blueman
@@ -23,6 +22,7 @@ man-db
 mate-media
 meson
 mpd
+ncmpcpp
 neofetch
 net-tools
 ntp
@@ -34,6 +34,7 @@ pdfjs
 psmisc
 pulseaudio
 pulseaudio-bluetooth
+python-pywal
 qutebrowser
 ranger
 rofi

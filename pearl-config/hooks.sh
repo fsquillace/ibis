@@ -1,91 +1,93 @@
+IBIS_SETUP_PACKAGES=${IBIS_SETUP_PACKAGES:-true}
 
 post_install() {
-    #sudo cp ${PEARL_PKGDIR}/configs/sudoers /etc/sudoers.d/01_myarch
-    #sudo chown root:root /etc/sudoers.d/01_myarch
-    #sudo chmod 440 /etc/sudoers.d/01_myarch
-    #sudo groupadd -f admin
-    #sudo gpasswd -a $USER admin
+    if $IBIS_SETUP_PACKAGES
+    then
+        # Install packages
+        sudo pacman --noconfirm -Syu
+        sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
+        # base-devel is essential for building AUR packages
+        sudo pacman --noconfirm -S base-devel
 
-    #sudo cp ${PEARL_PKGDIR}/configs/journald.conf /etc/systemd/journald.conf
-    #sudo chown root:root /etc/systemd/journald.conf
+        info "Installing yay..."
+        _install_yay
 
-    #warn "Overriding file for setting up bluetooth: /etc/bluetooth/main.conf"
-    #sudo mkdir -p /etc/bluetooth/
-    #sudo cp ${PEARL_PKGDIR}/configs/bluetooth-main.conf /etc/bluetooth/main.conf
+        if ask "Do you want to install AUR packages in ibis?" "Y"
+        then
+            _aur_setup
+        fi
+    fi
 
-    #if ask "Do you want to perform initial setup for Arch Linux?" "N"
-    #then
-        #ls /usr/share/zoneinfo/*/*
-        #local region=$(input "Choose one of the time zone above (i.e. Europe/Madrid)" "UTC")
-        #sudo ln -sf /usr/share/zoneinfo/$region /etc/localtime
+    sudo cp ${PEARL_PKGDIR}/configs/sudoers /etc/sudoers.d/01_myarch
+    sudo chown root:root /etc/sudoers.d/01_myarch
+    sudo chmod 440 /etc/sudoers.d/01_myarch
+    sudo groupadd -f admin
+    sudo gpasswd -a $USER admin
 
-        #local locale=$(input "Choose locale" "en_US")
-        #local encode=$(input "Choose encode" "UTF-8")
-        #local hostname=$(input "Hostname" "myarch")
+    sudo cp ${PEARL_PKGDIR}/configs/journald.conf /etc/systemd/journald.conf
+    sudo chown root:root /etc/systemd/journald.conf
 
-        #sudo sh -c "
-        #$(declare -f apply)
-        #$(declare -f check_not_null)
-        #apply '${locale}.${encode} ${encode}' /etc/locale.gen false
-        #locale-gen
-        #echo 'LANG=${locale}.${encode}' > /etc/locale.conf
-        #echo '$hostname' > /etc/hostname
-        #apply '127.0.0.1    localhost' /etc/hosts false
-        #apply '::1          localhost' /etc/hosts false
-        #apply '127.0.1.1    ${hostname}.localdomain  ${hostname}' /etc/hosts false
-        #hwclock --systohc
-        #"
+    warn "Overriding file for setting up bluetooth: /etc/bluetooth/main.conf"
+    sudo mkdir -p /etc/bluetooth/
+    sudo cp ${PEARL_PKGDIR}/configs/bluetooth-main.conf /etc/bluetooth/main.conf
 
-    #fi
+    if ask "Do you want to perform initial setup for Arch Linux?" "N"
+    then
+        ls /usr/share/zoneinfo/*/*
+        local region=$(input "Choose one of the time zone above (i.e. Europe/Madrid)" "UTC")
+        sudo ln -sf /usr/share/zoneinfo/$region /etc/localtime
 
-    ## Install packages
-    #sudo pacman --noconfirm -Syu
-    #sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
-    ## base-devel is essential for building AUR packages
-    #sudo pacman --noconfirm -S base-devel
+        local locale=$(input "Choose locale" "en_US")
+        local encode=$(input "Choose encode" "UTF-8")
+        local hostname=$(input "Hostname" "myarch")
 
-    #info "Installing yay..."
-    #_install_yay
+        sudo sh -c "
+        $(declare -f apply)
+        $(declare -f check_not_null)
+        apply '${locale}.${encode} ${encode}' /etc/locale.gen false
+        locale-gen
+        echo 'LANG=${locale}.${encode}' > /etc/locale.conf
+        echo '$hostname' > /etc/hostname
+        apply '127.0.0.1    localhost' /etc/hosts false
+        apply '::1          localhost' /etc/hosts false
+        apply '127.0.1.1    ${hostname}.localdomain  ${hostname}' /etc/hosts false
+        hwclock --systohc
+        "
 
-    #if ask "Do you want to install AUR packages in ibis?" "Y"
-    #then
-        #_aur_setup
-    #fi
+    fi
 
     mkdir -p $HOME/.local/bin
 
+    _configure_fonts
     _configure_rofi
     _configure_dunst
     _configure_polybar
     _configure_bspwm
     _configure_ncmpcpp
-    #_configure_gpg
-    #_configure_qutebrowser
-    #_configure_mpd
+    _configure_conky
+    _configure_gpg
+    _configure_qutebrowser
+    _configure_mpd
 
-    ## Systemd services
-    #sudo systemctl daemon-reload
-    #sudo systemctl start sshd.service
-    #sudo systemctl enable sshd.service
-    #sudo systemctl start udisks2.service
-    #sudo systemctl enable udisks2.service
-    #sudo systemctl start dbus.service
-    #sudo systemctl start bluetooth.service
-    #sudo systemctl enable bluetooth.service
-    #sudo systemctl start ntpd.service
-    #sudo systemctl enable ntpd.service
-    #sudo systemctl start transmission.service
-    #sudo systemctl enable transmission.service
+    # Systemd services
+    sudo systemctl daemon-reload
+    sudo systemctl start sshd.service
+    sudo systemctl enable sshd.service
+    sudo systemctl start udisks2.service
+    sudo systemctl enable udisks2.service
+    sudo systemctl start dbus.service
+    sudo systemctl start bluetooth.service
+    sudo systemctl enable bluetooth.service
+    sudo systemctl start ntpd.service
+    sudo systemctl enable ntpd.service
+    sudo systemctl start transmission.service
+    sudo systemctl enable transmission.service
 
-    ## https://wiki.archlinux.org/index.php/Pacman#Cleaning_the_package_cache
-    #sudo systemctl start paccache.timer
-    #sudo systemctl enable paccache.timer
+    # https://wiki.archlinux.org/index.php/Pacman#Cleaning_the_package_cache
+    sudo systemctl start paccache.timer
+    sudo systemctl enable paccache.timer
 
-    #sudo systemctl restart systemd-journald
-
-    #systemctl --user daemon-reload
-    #systemctl --user start mpd.service
-    #systemctl --user enable mpd.service
+    sudo systemctl restart systemd-journald
 
     # Apply custom configurations
     mkdir -p $PEARL_PKGVARDIR/configs/
@@ -97,7 +99,6 @@ post_install() {
     # Apply default configuration files
     apply "source $PEARL_PKGDIR/configs/xinitrc" "$HOME/.xinitrc"
     # The following makes sure to place BSP WM at the end
-    #apply "exec awesome" "$HOME/.xinitrc" false
     apply "exec bspwm" "$HOME/.xinitrc" false
 
     # Information and manual changes
@@ -107,6 +108,31 @@ post_install() {
 
     return 0
 }
+
+_configure_fonts() {
+    local fontspath=$HOME/.local/share/fonts/ibis-fonts/
+    rm -rf $fontspath
+    mkdir -p $fontspath
+    cd $fontspath
+    # For new versions check:
+    # https://github.com/ryanoasis/nerd-fonts/releases
+    local nerdfontsversion=2.1.0
+    fontname=Terminus
+    download https://github.com/ryanoasis/nerd-fonts/releases/download/v${nerdfontsversion}/$fontname.zip
+    unzip -o $fontname.zip
+    rm $fontname.zip*
+
+    fc-cache -frv "$fontspath"
+
+    # To check the list of installed font names
+    #fc-list | grep "$fontspath" | cut -d: -f2 | sort -u
+}
+
+_configure_conky() {
+    mkdir -p $HOME/.config/conky
+    link_to $PEARL_PKGDIR/configs/conky.conf $HOME/.config/conky/conky.conf
+}
+
 
 _configure_ncmpcpp() {
     mkdir -p $HOME/.config/ncmpcpp/lyrics
@@ -130,6 +156,7 @@ _configure_dunst() {
     backup $HOME/.config/dunst/dunstrc
     rm -f $HOME/.config/dunst/dunstrc
     link_to $PEARL_PKGDIR/configs/dunstrc $HOME/.config/dunst/dunstrc
+    link_to $PEARL_PKGDIR/configs/launch-dunst.sh $HOME/.config/dunst/launch.sh
 }
 
 _configure_polybar() {
@@ -176,6 +203,11 @@ _configure_mpd() {
     # https://wiki.archlinux.org/index.php/Music_Player_Daemon
     mkdir -p $HOME/.config/mpd/playlists
     cp $PEARL_PKGDIR/configs/mpd.conf $HOME/.config/mpd/
+
+    systemctl --user daemon-reload
+    systemctl --user start mpd.service
+    systemctl --user enable mpd.service
+
 }
 
 _configure_gpg() {

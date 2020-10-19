@@ -1,3 +1,4 @@
+
 configuration {
 /*	modi: "window,run,ssh,drun";*/
 /*	width: 50;*/
@@ -152,4 +153,5 @@ configuration {
 	show-icons: true;
 	combi-modi: "window,drun,run,ssh";
     modi: "window,drun,run,ssh,combi";
+    font: "TerminessTTF Nerd Font 14";
 }

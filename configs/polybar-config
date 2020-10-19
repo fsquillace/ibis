@@ -18,19 +18,23 @@
 
 [colors]
 background = ${xrdb:color0:#222}
+background-alt = ${xrdb:color8:#222}
 foreground = ${xrdb:color7:#222}
-highlight = ${xrdb:color15:#222}
+foreground-alt = ${xrdb:color6:#222}
+primary = ${xrdb:color1:#222}
+secondary = ${xrdb:color2:#222}
+alert = ${xrdb:color3:#222}
+
 red = ${xrdb:color1:#222}
 yellow = ${xrdb:color3:#222}
 green = ${xrdb:color2:#222}
 blue = ${xrdb:color4:#222}
 
-background-alt = #444
-foreground-alt = #555
-
-primary = #ffb52a
-secondary = #e60053
-alert = #bd2c40
+;background-alt = #444
+;foreground-alt = #555
+;primary = #ffb52a
+;secondary = #e60053
+;alert = #bd2c40
 
 [bar/base]
 monitor = ${env:MONITOR:}
@@ -66,7 +70,7 @@ line-size = 1
 override-redirect = false
 wm-restack = bspwm
 
-module-margin-left = 0
+module-margin-left = 1
 module-margin-right = 1
 
 ;scroll-up = bspwm-desknext
@@ -78,8 +82,8 @@ cursor-scroll = ns-resize
 [bar/top]
 inherit = bar/base
 
-modules-left = bspwm mpd
-modules-center =
+modules-left = bspwm
+modules-center = ncmpcpp mpd
 modules-right = redshift xbacklight pulseaudio wlan eth date
 
 tray-position = right
@@ -101,12 +105,11 @@ reverse-scroll = false
 ws-icon-0 = term;1:
 ws-icon-1 = web;2:
 ws-icon-2 = media;3:
-;ws-icon-3 = games;
 ws-icon-3 = games;4:
 ws-icon-4 = code;5:
 ws-icon-5 = docs;6:
 ws-icon-6 = misc;7:
-ws-icon-default = 
+ws-icon-default = 
 
 label-focused = %icon%
 label-focused-background = ${colors.background-alt}
@@ -134,7 +137,8 @@ type = internal/xwindow
 ;   <label> (default)
 ;format = <label>
 format-padding = 1
-format-underline = ${colors.blue}
+#format-underline = ${colors.blue}
+format-underline = ${colors.primary}
 
 ; Available tokens:
 ;   %title%
@@ -155,15 +159,15 @@ blacklist-0 = num lock
 
 format-prefix = "  "
 format-prefix-foreground = ${colors.foreground}
-format-prefix-underline = ${colors.secondary}
+format-prefix-underline = ${colors.red}
 
 label-layout = %layout%
-label-layout-underline = ${colors.secondary}
+label-layout-underline = ${colors.red}
 
 label-indicator-padding = 2
 label-indicator-margin = 1
-label-indicator-background = ${colors.secondary}
-label-indicator-underline = ${colors.secondary}
+label-indicator-background = ${colors.red}
+label-indicator-underline = ${colors.red}
 
 [module/filesystem]
 type = internal/fs
@@ -213,7 +217,8 @@ label-mounted = "%{T2} %{T-}:%percentage_used%%"
 [module/mpd]
 type = internal/mpd
 
-format-online = <icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>   <label-song>   <bar-progress> <label-time>
+;format-online = <icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>   <label-song>   <bar-progress> <label-time>
+format-online = <icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>   <label-song>  <label-time>
 ;format-playing = ${self.format-online}
 ;format-paused = ${self.format-online}
 ;format-stopped = ${self.format-online}
@@ -222,7 +227,7 @@ format-offline = <label-offline>
 label-offline =  offline
 ;format-offline-padding = 2
 
-label-song = "ﱘ %title%"
+label-song = "%title%"
 
 icon-prev = 玲
 icon-seekb = 丹
@@ -234,7 +239,7 @@ icon-next = 怜
 icon-repeat = 凌
 icon-random = 咽
 
-label-song-maxlen = 35
+label-song-maxlen = 40
 label-song-ellipsis = true
 
 ; Only applies if <bar-progress> is used
@@ -274,12 +279,21 @@ card = intel_backlight
 [module/redshift]
 type = custom/script
 format-prefix = "%{T2}%{T-} "
+format-underline = ${colors.red}
 exec = source ~/.config/polybar/scripts/env.sh && ~/.config/polybar/scripts/redshift.sh temperature
 click-left = source ~/.config/polybar/scripts/env.sh && ~/.config/polybar/scripts/redshift.sh toggle
 scroll-up = source ~/.config/polybar/scripts/env.sh && ~/.config/polybar/scripts/redshift.sh increase
 scroll-down = source ~/.config/polybar/scripts/env.sh && ~/.config/polybar/scripts/redshift.sh decrease
 interval=0.5
 ;format-padding = 1
+
+[module/ncmpcpp]
+type = custom/script
+
+label = "ﱘ"
+exec = echo music
+click-left = urxvtc -e ncmpcpp
+interval = 1000
 
 [module/cpu]
 type = internal/cpu
@@ -308,12 +322,14 @@ interval = 3.0
 
 format-connected = 直 <label-connected>
 ;format-connected-underline = #9f78e1
+format-connected-underline = ${colors.green}
 label-connected = %essid%
 
 format-disconnected = 睊 <label-disconnected>
 ;format-disconnected-underline = ${self.format-connected-underline}
 label-disconnected = %ifname%
 label-disconnected-foreground = ${colors.foreground}
+format-disconnected-underline = ${colors.green}
 
 ramp-signal-0 = 
 ramp-signal-1 = 
@@ -327,9 +343,9 @@ type = internal/network
 interface = eth0
 interval = 3.0
 
-format-connected-underline = #55aa55
+format-connected-underline = ${colors.green}
 format-connected-prefix = " "
-format-connected-prefix-foreground = ${colors.foreground-alt}
+format-connected-prefix-foreground = ${colors.foreground}
 label-connected = %local_ip%
 
 format-disconnected = 
@@ -343,16 +359,17 @@ type = internal/date
 
 interval = 5
 
-;format-prefix = %{T2}%{T-}
+;format-prefix = %{T2}%{T-}
 ;format-prefix-foreground = ${colors.foreground}
 ;format-underline = #0a6cf5
+format-underline = ${colors.blue}
 
 format-margin = 1
 time = "%H:%M"
 time-alt = %H:%M:%S
 date = "%d %b"
 date-alt = " %Y-%m-%d"
-label = %{T2}%{T-} %date%, %time%
+label = %{T2}%{T-} %date%, %time%
 
 
 [module/pulseaudio]
@@ -362,10 +379,12 @@ format-volume = <ramp-volume> <label-volume>
 label-volume = %percentage%%
 label-volume-foreground = ${root.foreground}
 ;format-volume-underline = #0a6cf5
+format-volume-underline = ${colors.yellow}
 
 label-muted = ﱝ muted
 label-muted-foreground = ${colors.foreground}
 ;format-muted-underline = #0a6cf5
+format-muted-underline = ${colors.yellow}
 
 ; Use PA_VOLUME_UI_MAX (~153%) if true, or PA_VOLUME_NORM (100%) if false
 ; Default: true
@@ -454,7 +473,7 @@ full-at = 98
 poll-interval = 5
 
 format-charging = <ramp-capacity> <label-charging>
-format-charging-underline = #ffb52a
+format-charging-underline = ${colors.yellow}
 
 format-discharging = <ramp-capacity> <label-discharging>
 format-discharging-underline = ${self.format-charging-underline}
@@ -527,7 +546,8 @@ label-separator-foreground = ${colors.foreground-alt}
 menu-0-0 = lock screen
 menu-0-0-exec = sudo slock
 menu-0-1 = suspend
-menu-0-1-exec = menu-open-3
+menu-0-1-exec = sudo slock & sudo systemctl suspend
+
 menu-0-2 = reboot
 menu-0-2-exec = menu-open-1
 menu-0-3 = power off
@@ -542,11 +562,6 @@ menu-2-0 = cancel
 menu-2-0-exec = menu-open-0
 menu-2-1 = power off
 menu-2-1-exec = sudo poweroff
-
-menu-3-0 = cancel
-menu-3-0-exec = menu-open-0
-menu-3-1 = suspend
-menu-3-1-exec = sudo slock & sudo systemctl suspend
 
 [settings]
 screenchange-reload = true
