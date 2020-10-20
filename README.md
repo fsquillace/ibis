@@ -56,10 +56,18 @@ The final dependency is `sudo` as Ibis will require to install the needed packag
 
 ### Ibis installation
 
-Update the `~/.config/pearl/pearl.conf` to include the repo and install Ibis via Pearl:
+Update the `~/.config/pearl/pearl.conf` to include the following:
 
 ```
-echo 'PEARL_REPOS+=("https://github.com/fsquillace/ibis.git")' >> ~/.config/pearl/pearl.conf
+PEARL_PACKAGES = {
+    'ibis': {
+        "url": 'https://github.com/fsquillace/ibis.git',
+    },
+}
+```
+
+Then, to install Ibis:
+```
 pearl install ibis
 ```
 
