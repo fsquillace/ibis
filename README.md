@@ -11,7 +11,7 @@ The Arch Linux based distro for Desktop Environments tailored to minimalists.
 - [Troubleshooting](#troubleshooting)
 
 ## Description
-Ibis is an Arch Linux based distro with Awesome Window manager and few minimal
+Ibis is an Arch Linux based distro with BSPWM Window manager and few minimal
 packages for basic functionalities such as ssh, auto mounting, image viewer,
 text editor, audio/video player, etc. No other additional overhead is added into Ibis.
 
@@ -21,6 +21,7 @@ The system has been designed with the following principles in mind:
 - Pick up the packages which deliver a minimal but complete solution for them;
 - Configure the packages to make them working out of the box;
 - Get an environment entirely reproducible via [Pearl](https://github.com/pearl-core/pearl) system.
+  - Allows to have an interactive installation process
 
 If you think the package list does not suit your need, feel free to either
 suggest changes or fork the project and create your own distro style.
@@ -28,6 +29,13 @@ suggest changes or fork the project and create your own distro style.
 The name Ibis come from the notorious
 [Australian white ibis](https://en.wikipedia.org/wiki/Australian_white_ibis)
 bird which populates Sydney city.
+
+## Screenshots
+
+![hollowknight](images/screenshot-hollowknight.png)
+![steamburn](images/screenshot-steamburn.png)
+![holo](images/screenshot-holo.png)
+![rainbow](images/screenshot-rainbow.png)
 
 ## Installation
 
@@ -71,7 +79,7 @@ For the complete list of packages installed by Ibis take a look at
 [`packages`](packages) and [`aur-packages`](aur-packages) files.
 
 ### Window manager
-- awesome
+- bspwm
 
 ### PDF viewer
 - zathura
@@ -92,7 +100,7 @@ For the complete list of packages installed by Ibis take a look at
 ### Video and sound
 - mate-media
 - mpd
-- ario
+- ncmpcpp
 - pulseaudio
 - smplayer
 
