@@ -1,0 +1,578 @@
+;==========================================================
+;
+;
+;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
+;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
+;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
+;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
+;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
+;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+;
+;
+;   To learn more about how to configure Polybar
+;   go to https://github.com/polybar/polybar
+;
+;   The README contains a lot of information
+;
+;==========================================================
+
+[colors]
+background = ${xrdb:color0:#222}
+background-alt = ${xrdb:color8:#222}
+foreground = ${xrdb:color7:#222}
+foreground-alt = ${xrdb:color6:#222}
+primary = ${xrdb:color1:#222}
+secondary = ${xrdb:color2:#222}
+alert = ${xrdb:color3:#222}
+
+red = ${xrdb:color1:#222}
+yellow = ${xrdb:color3:#222}
+green = ${xrdb:color2:#222}
+blue = ${xrdb:color4:#222}
+
+;background-alt = #444
+;foreground-alt = #555
+;primary = #ffb52a
+;secondary = #e60053
+;alert = #bd2c40
+
+[bar/base]
+monitor = ${env:MONITOR:}
+width = 100%
+height = 26
+radius = 6.0
+;offset-x = 1%
+;offset-y = 1%
+;
+enable-ipc = true
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+;font-0=Cozette:pixelsize=1;2
+;font-1=FontAwesome5Free:style=Solid:pixelsize=9.5:antialias=true;2
+font-0 = TerminessTTF Nerd Font:pixelsize=14:antialias=true;1
+;font-0 = fixed:pixelsize=10;1
+font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
+font-2 = TerminessTTF Nerd Font:pixelsize=10;1
+;font-2 = siji:pixelsize=10;1
+
+;override-redirect = true
+
+padding-left = 0
+padding-right = 1
+border-size = 0
+border-color = ${colors.foreground}
+fixed-center = true
+;separator ="  "
+line-size = 1
+;line-color = #f00
+override-redirect = false
+wm-restack = bspwm
+
+module-margin-left = 1
+module-margin-right = 1
+
+;scroll-up = bspwm-desknext
+;scroll-down = bspwm-deskprev
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+[bar/top]
+inherit = bar/base
+
+modules-left = bspwm
+modules-center = ncmpcpp mpd
+modules-right = redshift xbacklight pulseaudio wlan eth date
+
+tray-position = right
+tray-padding = 0
+;tray-background = #0063ff
+
+[bar/bottom]
+inherit = bar/base
+bottom = true
+modules-left = powermenu xwindow
+modules-right = xkeyboard cpu memory battery fsroot fshome temperature
+;modules-center =
+
+[module/bspwm]
+type = internal/bspwm
+
+reverse-scroll = false
+
+ws-icon-0 = term;1:
+ws-icon-1 = web;2:
+ws-icon-2 = media;3:
+ws-icon-3 = games;4:
+ws-icon-4 = code;5:
+ws-icon-5 = docs;6:
+ws-icon-6 = misc;7:
+ws-icon-default = 
+
+label-focused = %icon%
+label-focused-background = ${colors.background-alt}
+label-focused-underline= ${colors.primary}
+label-focused-padding = 1
+
+label-occupied = %icon%
+label-occupied-padding = 1
+
+label-urgent = %icon%!
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 1
+
+label-empty = %icon%
+label-empty-foreground = ${colors.foreground-alt}
+label-empty-padding = 1
+
+; Separator in between workspaces
+; label-separator = |
+
+[module/xwindow]
+type = internal/xwindow
+
+; Available tags:
+;   <label> (default)
+;format = <label>
+format-padding = 1
+#format-underline = ${colors.blue}
+format-underline = ${colors.primary}
+
+; Available tokens:
+;   %title%
+; Default: %title%
+;label = %title:0:30:...%
+label-maxlen = 30
+
+; Used instead of label when there is no window title
+; Available tokens:
+;   None
+label-empty = " Empty"
+;label-empty-foreground = #707880
+
+
+[module/xkeyboard]
+type = internal/xkeyboard
+blacklist-0 = num lock
+
+format-prefix = "  "
+format-prefix-foreground = ${colors.foreground}
+format-prefix-underline = ${colors.red}
+
+label-layout = %layout%
+label-layout-underline = ${colors.red}
+
+label-indicator-padding = 2
+label-indicator-margin = 1
+label-indicator-background = ${colors.red}
+label-indicator-underline = ${colors.red}
+
+[module/filesystem]
+type = internal/fs
+interval = 30
+
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.foreground}
+
+format-mounted-underline = ${colors.green}
+format-unmounted-underline = ${colors.green}
+
+; Available tags:
+;   <label-mounted> (default)
+;   <bar-free>
+;   <bar-used>
+;   <ramp-capacity>
+format-mounted = <label-mounted>
+
+; Available tags:
+;   <label-unmounted> (default)
+format-unmounted = <label-unmounted>
+
+; Display fixed precision values
+; Default: false
+fixed-values = true
+
+; Spacing between entries
+; Default: 2
+spacing = 1
+
+[module/fsroot]
+inherit = module/filesystem
+
+mount-0 = /
+
+label-mounted = "%{T2} %{T-}:%percentage_used%%"
+;label-mounted = %{F#0a81f5}%{F-}: %percentage_used%%
+
+[module/fshome]
+inherit = module/filesystem
+
+mount-0 = /home
+
+label-mounted = "%{T2} %{T-}:%percentage_used%%"
+;label-mounted = %{F#0a81f5}%{F-}: %percentage_used%%
+;
+[module/mpd]
+type = internal/mpd
+
+;format-online = <icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>   <label-song>   <bar-progress> <label-time>
+format-online = <icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>   <label-song>  <label-time>
+;format-playing = ${self.format-online}
+;format-paused = ${self.format-online}
+;format-stopped = ${self.format-online}
+;fotmat-online-margin = 2
+format-offline = <label-offline>
+label-offline =  offline
+;format-offline-padding = 2
+
+label-song = "%title%"
+
+icon-prev = 玲
+icon-seekb = 丹
+icon-stop = 栗
+icon-play = 契
+icon-pause = 
+icon-seekf = 
+icon-next = 怜
+icon-repeat = 凌
+icon-random = 咽
+
+label-song-maxlen = 40
+label-song-ellipsis = true
+
+; Only applies if <bar-progress> is used
+bar-progress-width = 45
+bar-progress-indicator = |
+bar-progress-fill = ─
+bar-progress-empty = ─
+
+; Available tokens:
+;   %elapsed%
+;   %total%
+; Default: %elapsed% / %total%
+label-time = %elapsed%/%total%
+
+[module/xbacklight]
+type = internal/xbacklight
+
+format = <label> <bar>
+label = BL
+
+bar-width = 10
+bar-indicator = |
+bar-indicator-foreground = #fff
+bar-indicator-font = 2
+bar-fill = ─
+bar-fill-font = 2
+bar-fill-foreground = #9f78e1
+bar-empty = ─
+bar-empty-font = 2
+bar-empty-foreground = ${colors.foreground-alt}
+
+[module/backlight-acpi]
+inherit = module/xbacklight
+type = internal/backlight
+card = intel_backlight
+
+[module/redshift]
+type = custom/script
+format-prefix = "%{T2}%{T-} "
+format-underline = ${colors.red}
+exec = source ~/.config/polybar/scripts/env.sh && ~/.config/polybar/scripts/redshift.sh temperature
+click-left = source ~/.config/polybar/scripts/env.sh && ~/.config/polybar/scripts/redshift.sh toggle
+scroll-up = source ~/.config/polybar/scripts/env.sh && ~/.config/polybar/scripts/redshift.sh increase
+scroll-down = source ~/.config/polybar/scripts/env.sh && ~/.config/polybar/scripts/redshift.sh decrease
+interval=0.5
+;format-padding = 1
+
+[module/ncmpcpp]
+type = custom/script
+
+label = "ﱘ"
+exec = echo music
+click-left = urxvtc -e ncmpcpp
+interval = 1000
+
+[module/cpu]
+type = internal/cpu
+
+interval = 2
+
+format-prefix = "%{T2}%{T-} "
+format-prefix-foreground = ${colors.foreground}
+format-underline = ${colors.red}
+label = %percentage:2%%
+
+[module/memory]
+type = internal/memory
+
+interval = 2
+
+format-prefix = "%{T2}%{T-} "
+format-prefix-foreground = ${colors.foreground}
+format-underline = ${colors.yellow}
+label = %percentage_used%%
+
+[module/wlan]
+type = internal/network
+interface = wlp3s0
+interval = 3.0
+
+format-connected = 直 <label-connected>
+;format-connected-underline = #9f78e1
+format-connected-underline = ${colors.green}
+label-connected = %essid%
+
+format-disconnected = 睊 <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+label-disconnected = %ifname%
+label-disconnected-foreground = ${colors.foreground}
+format-disconnected-underline = ${colors.green}
+
+ramp-signal-0 = 
+ramp-signal-1 = 
+ramp-signal-2 = 
+ramp-signal-3 = 
+ramp-signal-4 = 
+ramp-signal-foreground = ${colors.foreground}
+
+[module/eth]
+type = internal/network
+interface = eth0
+interval = 3.0
+
+format-connected-underline = ${colors.green}
+format-connected-prefix = " "
+format-connected-prefix-foreground = ${colors.foreground}
+label-connected = %local_ip%
+
+format-disconnected = 
+;format-disconnected = <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+;label-disconnected = %ifname% disconnected
+;label-disconnected-foreground = ${colors.foreground-alt}
+
+[module/date]
+type = internal/date
+
+interval = 5
+
+;format-prefix = %{T2}%{T-}
+;format-prefix-foreground = ${colors.foreground}
+;format-underline = #0a6cf5
+format-underline = ${colors.blue}
+
+format-margin = 1
+time = "%H:%M"
+time-alt = %H:%M:%S
+date = "%d %b"
+date-alt = " %Y-%m-%d"
+label = %{T2}%{T-} %date%, %time%
+
+
+[module/pulseaudio]
+type = internal/pulseaudio
+
+format-volume = <ramp-volume> <label-volume>
+label-volume = %percentage%%
+label-volume-foreground = ${root.foreground}
+;format-volume-underline = #0a6cf5
+format-volume-underline = ${colors.yellow}
+
+label-muted = ﱝ muted
+label-muted-foreground = ${colors.foreground}
+;format-muted-underline = #0a6cf5
+format-muted-underline = ${colors.yellow}
+
+; Use PA_VOLUME_UI_MAX (~153%) if true, or PA_VOLUME_NORM (100%) if false
+; Default: true
+use-ui-max = true
+
+; Interval for volume increase/decrease (in percent points)
+; Default: 5
+interval = 5
+
+
+; Right and Middle click (unreleased)
+click-right = pavucontrol &
+; click-middle =
+
+bar-volume-width = 10
+bar-volume-foreground-0 = #55aa55
+bar-volume-foreground-1 = #55aa55
+bar-volume-foreground-2 = #55aa55
+bar-volume-foreground-3 = #55aa55
+bar-volume-foreground-4 = #55aa55
+bar-volume-foreground-5 = #f5a70a
+bar-volume-foreground-6 = #ff5555
+bar-volume-gradient = false
+bar-volume-indicator = |
+bar-volume-indicator-font = 2
+bar-volume-fill = ─
+bar-volume-fill-font = 2
+bar-volume-empty = ─
+bar-volume-empty-font = 2
+bar-volume-empty-foreground = ${colors.foreground-alt}
+
+; Only applies if <ramp-volume> is used
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+
+
+[module/alsa]
+type = internal/alsa
+
+format-volume = <label-volume> <bar-volume>
+label-volume = VOL
+label-volume-foreground = ${root.foreground}
+
+format-muted-prefix = " "
+format-muted-foreground = ${colors.foreground-alt}
+label-muted = sound muted
+
+bar-volume-width = 10
+bar-volume-foreground-0 = #55aa55
+bar-volume-foreground-1 = #55aa55
+bar-volume-foreground-2 = #55aa55
+bar-volume-foreground-3 = #55aa55
+bar-volume-foreground-4 = #55aa55
+bar-volume-foreground-5 = #f5a70a
+bar-volume-foreground-6 = #ff5555
+bar-volume-gradient = false
+bar-volume-indicator = |
+bar-volume-indicator-font = 2
+bar-volume-fill = ─
+bar-volume-fill-font = 2
+bar-volume-empty = ─
+bar-volume-empty-font = 2
+bar-volume-empty-foreground = ${colors.foreground-alt}
+
+[module/battery]
+type = internal/battery
+
+; Use the following command to list batteries and adapters:
+; $ ls -1 /sys/class/power_supply/
+battery = BAT0
+adapter = AC0
+
+; This is useful in case the battery never reports 100% charge
+full-at = 98
+
+; If an inotify event haven't been reported in this many
+; seconds, manually poll for new values.
+;
+; Needed as a fallback for systems that don't report events
+; on sysfs/procfs.
+;
+; Disable polling by setting the interval to 0.
+;
+; Default: 5
+poll-interval = 5
+
+format-charging = <ramp-capacity> <label-charging>
+format-charging-underline = ${colors.yellow}
+
+format-discharging = <ramp-capacity> <label-discharging>
+format-discharging-underline = ${self.format-charging-underline}
+
+format-full-prefix = " "
+format-full-prefix-foreground = ${colors.foreground}
+format-full-underline = ${self.format-charging-underline}
+
+ramp-capacity-7 = 
+ramp-capacity-6 = 
+ramp-capacity-5 = 
+ramp-capacity-4 = 
+ramp-capacity-3 = 
+ramp-capacity-2 = 
+ramp-capacity-1 = 
+ramp-capacity-0 = 
+ramp-capacity-foreground = ${colors.foreground}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-foreground = ${colors.foreground}
+animation-charging-framerate = 750
+
+animation-discharging-0 = 
+animation-discharging-1 = 
+animation-discharging-2 = 
+animation-discharging-foreground = ${colors.foreground}
+animation-discharging-framerate = 750
+
+[module/temperature]
+type = internal/temperature
+
+units = true
+interval = 5
+
+thermal-zone = 0
+warn-temperature = 60
+
+format = <ramp> <label>
+format-underline = ${colors.blue}
+format-warn = <ramp> <label-warn>
+format-warn-underline = ${self.format-underline}
+
+label = %temperature-c%
+label-warn = %temperature-c%
+label-warn-foreground = ${colors.secondary}
+
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
+ramp-3 = 
+ramp-4 = 
+ramp-foreground = ${colors.foreground}
+
+[module/powermenu]
+type = custom/menu
+
+expand-right = true
+
+format-spacing = 2
+
+label-open = 
+label-open-foreground = ${colors.secondary}
+label-close =  cancel
+label-close-foreground = ${colors.secondary}
+label-separator = |
+label-separator-foreground = ${colors.foreground-alt}
+
+menu-0-0 = lock screen
+menu-0-0-exec = sudo slock
+menu-0-1 = suspend
+menu-0-1-exec = sudo slock & sudo systemctl suspend
+
+menu-0-2 = reboot
+menu-0-2-exec = menu-open-1
+menu-0-3 = power off
+menu-0-3-exec = menu-open-2
+
+menu-1-0 = cancel
+menu-1-0-exec = menu-open-0
+menu-1-1 = reboot
+menu-1-1-exec = sudo reboot
+
+menu-2-0 = cancel
+menu-2-0-exec = menu-open-0
+menu-2-1 = power off
+menu-2-1-exec = sudo poweroff
+
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
+;pseudo-transparency = false
+
+[global/wm]
+margin-top = 5
+margin-bottom = 5
+
+; vim:ft=dosini

@@ -1,0 +1,105 @@
+#!/bin/bash
+
+########################
+## Applications
+########################
+
+# Make sure pywal run first in order to update the color palettes for
+# all other applications (i.e. dunst)
+wal -i $HOME/images/wallpapers
+$HOME/.config/polybar/launch.sh
+$HOME/.config/dunst/launch.sh
+pgrep -x sxhkd > /dev/null || sxhkd &
+# Reload sxhkd configuration
+pkill -USR1 -x sxhkd
+
+
+########################
+## General
+########################
+
+if type "xrandr"; then
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    bspc monitor $m -d term web media games code docs misc
+  done
+else
+    bspc monitor -d term web media games code docs misc
+fi
+
+
+bspc config border_width         1
+bspc config window_gap          12
+
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+
+# Without PyWal
+#bspc config normal_border_color "#282828"
+#bspc config active_border_color "#ebdbb2"
+## Yellow:
+#bspc config focused_border_color "#ffb52a"
+## Orange:
+##bspc config focused_border_color "#fe8019"
+
+###########
+# PyWal
+###########
+# https://github.com/dylanaraps/pywal/wiki/Customization#bspwm
+# source the colors.
+source "${HOME}/.cache/wal/colors.sh"
+
+# Set the border colors.
+bspc config normal_border_color "$color15"
+bspc config active_border_color "$color2"
+bspc config focused_border_color "$color1"
+bspc config presel_feedback_color "$color1"
+
+########################
+## Rules
+########################
+
+# To create a rule for a given window you need to get either the WM class or name:
+# * Run `xprop` command
+# * Click the window
+# * Use the properties WM_NAME or WM_CLASS to build the rules
+
+# Terminal applications
+bspc rule -a URxvt desktop='term' follow=on
+
+# Web applications
+bspc rule -a chromium desktop='web'
+bspc rule -a Firefox desktop='web' follow=on
+bspc rule -a firefox desktop='web' follow=on
+bspc rule -a Navigator desktop='web' follow=on
+bspc rule -a 'google-chrome' desktop='web' follow=on
+bspc rule -a 'Google-chrome' desktop='web' follow=on
+bspc rule -a Dwb desktop='web'
+bspc rule -a qutebrowser desktop='web' follow=on
+
+# Media applications
+bspc rule -a mplayer2 state=floating desktop='media'
+bspc rule -a smplayer state=floating desktop='media'
+bspc rule -a MPlayer state=floating desktop='media'
+bspc rule -a Gimp desktop='media' state=floating follow=on
+bspc rule -a Pinta desktop='media' follow=on
+bspc rule -a 'Vlc' desktop='media' follow=on
+bspc rule -a vlc desktop='media' follow=on
+
+# Code applications
+bspc rule -a Atom desktop='code' follow=on
+bspc rule -a Code desktop='code' follow=on
+bspc rule -a 'jetbrains-studio' desktop='code' follow=on
+bspc rule -a 'jetbrains-idea-ce' desktop='code' follow=on
+bspc rule -a 'NetBeans IDE 8.2' desktop='code' follow=on
+bspc rule -a 'java-lang-Thread' desktop='code' follow=on
+
+# Doc applications
+bspc rule -a libreoffice desktop='docs'
+
+# Games applications
+bspc rule -a 'Steam' desktop='games'
+bspc rule -a 'streamlink-twitch-gui' desktop='games' follow=on
+
