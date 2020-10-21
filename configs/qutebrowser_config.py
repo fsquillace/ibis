@@ -1620,8 +1620,6 @@ c.url.searchengines = {
 # To reflect behavior of vim use jump list for history
 config.bind('<Ctrl-o>', 'back')
 config.bind('<Ctrl-i>', 'forward')
-config.bind('<Ctrl-Tab>', 'tab-next')
-config.bind('<Ctrl-Shift-Tab>', 'tab-prev')
 # config.bind('M', 'bookmark-add')
 # config.bind('N', 'search-prev')
 # config.bind('O', 'set-cmd-text -s :open -t')

@@ -149,9 +149,9 @@ configuration {
 /*	me-accept-entry: "MouseDPrimary";*/
 /*	me-accept-custom: "Control+MouseDPrimary";*/
 
-	theme: "gruvbox-dark-soft";
 	show-icons: true;
 	combi-modi: "window,drun,run,ssh";
     modi: "window,drun,run,ssh,combi";
     font: "TerminessTTF Nerd Font 14";
 }
+@import "~/.cache/wal/colors-rofi-dark"

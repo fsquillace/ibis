@@ -77,7 +77,7 @@ bspc rule -a Navigator desktop='web' follow=on
 bspc rule -a 'google-chrome' desktop='web' follow=on
 bspc rule -a 'Google-chrome' desktop='web' follow=on
 bspc rule -a Dwb desktop='web'
-bspc rule -a qutebrowser desktop='web'
+bspc rule -a qutebrowser desktop='web' follow=on
 
 # Media applications
 bspc rule -a mplayer2 state=floating desktop='media'
