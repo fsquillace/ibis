@@ -74,6 +74,7 @@ bspc rule -a chromium desktop='web'
 bspc rule -a Firefox desktop='web' follow=on
 bspc rule -a firefox desktop='web' follow=on
 bspc rule -a Navigator desktop='web' follow=on
+bspc rule -a 'Tor Browser' desktop='web' follow=on
 bspc rule -a 'google-chrome' desktop='web' follow=on
 bspc rule -a 'Google-chrome' desktop='web' follow=on
 bspc rule -a Dwb desktop='web'

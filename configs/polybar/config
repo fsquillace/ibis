@@ -53,8 +53,8 @@ foreground = ${colors.foreground}
 ;font-1=FontAwesome5Free:style=Solid:pixelsize=9.5:antialias=true;2
 font-0 = TerminessTTF Nerd Font:pixelsize=14:antialias=true;1
 ;font-0 = fixed:pixelsize=10;1
-font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
-font-2 = TerminessTTF Nerd Font:pixelsize=10;1
+;font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
+;font-2 = TerminessTTF Nerd Font:pixelsize=10;1
 ;font-2 = siji:pixelsize=10;1
 
 ;override-redirect = true

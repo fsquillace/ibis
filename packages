@@ -35,6 +35,7 @@ psmisc
 pulseaudio
 pulseaudio-bluetooth
 python-pywal
+python-tldextract
 qutebrowser
 ranger
 rofi
