@@ -21,6 +21,7 @@ libnotify
 man-db
 mate-media
 meson
+mpc
 mpd
 ncmpcpp
 neofetch

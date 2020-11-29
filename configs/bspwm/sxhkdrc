@@ -122,34 +122,44 @@ super + {Left,Down,Up,Right}
 
 
 #
-# Applications
+# Applications (super + ctrl + alt combos)
 #
 
-super + alt + {Up,Down,m}
+super + ctrl + alt + {Up,Down,m}
 	amixer set Master {5%+,5%-,toggle}
 
 # Copy primary to clipboard (terminals to gtk)
-super + alt + c
+super + ctrl + alt + c
 	xsel | xsel -i -b
 
 # Copy clipboard to primary (gtk to terminals)
-super + alt + v
+super + ctrl + alt + v
 	xsel -b | xsel
 
-super + alt + l
+super + ctrl + alt + l
 	sudo slock
 
-super + alt + d
+super + ctrl + alt + s
+	sudo slock & sudo systemctl suspend
+
+super + ctrl + alt + d
 	udiskie-umount -a
 
 Print
 	scrot -q 100 '%Y-%m-%d_%H%M%S-$wx$h.png' -e 'mv $f ~/ 2>/dev/null'
 
 # Scrot selection
-super + alt + s
+super + ctrl + alt + q
 	scrot -s -q 100 '%Y-%m-%d_%H%M%S-$wx$h.png' -e 'mv $f ~/ 2>/dev/null'
 
+# MPD
+super + ctrl + alt + t
+	mpc toggle
 
+super + ctrl + alt + p
+	mpc prev
 
+super + ctrl + alt + n
+	mpc next
 
 
