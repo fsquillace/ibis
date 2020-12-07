@@ -1,18 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # https://www.reddit.com/r/bspwm/comments/d08bzz/dunst_pywal/
 #        -lf/nf/cf color
 #            Defines the foreground color for low, normal and critical notifications respectively.
-# 
+#
 #        -lb/nb/cb color
 #            Defines the background color for low, normal and critical notifications respectively.
-# 
+#
 #        -lfr/nfr/cfr color
 #            Defines the frame color for low, normal and critical notifications respectively.
 
 [[ -f "$HOME/.cache/wal/colors.sh" ]] && source "$HOME/.cache/wal/colors.sh"
 
-pidof dunst && killall dunst
+# Terminate already running dunst instances (if exists)
+killall -q dunst
 
 dunst -lf  "${color2:-#ffffff}" \
       -nf  "${color3:-#cccccc}" \
@@ -24,3 +25,4 @@ dunst -lf  "${color2:-#ffffff}" \
       -nfr "${color1:-#aaaaaa}" \
       -cfr "${color1:-#777777}" > /dev/null 2>&1 &
 
+echo "Dunst launched..."

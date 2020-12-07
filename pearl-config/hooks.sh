@@ -32,6 +32,7 @@ post_install() {
     _configure_dunst install
     _configure_polybar install
     _configure_bspwm install
+    _configure_sxhkd install
     _configure_ncmpcpp install
     _configure_gpg install
     _configure_qutebrowser install
@@ -67,6 +68,7 @@ pre_remove() {
     _configure_dunst remove
     _configure_polybar remove
     _configure_bspwm remove
+    _configure_sxhkd remove
     _configure_ncmpcpp remove
     _configure_gpg remove
     _configure_qutebrowser remove
@@ -279,23 +281,35 @@ _configure_polybar() {
 
 _configure_bspwm() {
     mkdir -p $HOME/.config/bspwm
-    mkdir -p $HOME/.config/sxhkd
 
     if [[ $1 == "install" ]]
     then
-        local linkfuncname=link_to
         local applyfuncname=apply
     elif [[ $1 == "remove" ]]
     then
-        local linkfuncname=unlink_from
         local applyfuncname=unapply
     fi
     $applyfuncname "source $PEARL_PKGDIR/configs/bspwm/bspwmrc" $HOME/.config/bspwm/bspwmrc
     $applyfuncname "#!/bin/bash" $HOME/.config/bspwm/bspwmrc
     chmod +x $HOME/.config/bspwm/bspwmrc
-
-    $linkfuncname $PEARL_PKGDIR/configs/bspwm/sxhkdrc $HOME/.config/sxhkd/sxhkdrc
 }
+
+
+_configure_sxhkd() {
+    mkdir -p $HOME/.config/sxhkd
+
+    if [[ $1 == "install" ]]
+    then
+        local linkfuncname=link_to
+    elif [[ $1 == "remove" ]]
+    then
+        local linkfuncname=unlink_from
+    fi
+
+    $linkfuncname $PEARL_PKGDIR/configs/sxhkd/sxhkdrc $HOME/.config/sxhkd/sxhkdrc
+    $linkfuncname $PEARL_PKGDIR/configs/sxhkd/launch.sh $HOME/.config/sxhkd/launch.sh
+}
+
 
 _configure_qutebrowser() {
     # Umpv is used together with qutebrowser for watching video:

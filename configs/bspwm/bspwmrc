@@ -6,12 +6,12 @@
 
 # Make sure pywal run first in order to update the color palettes for
 # all other applications (i.e. dunst)
+mkdir -p $HOME/images/wallpapers
 wal -i $HOME/images/wallpapers
+
 $HOME/.config/polybar/launch.sh
 $HOME/.config/dunst/launch.sh
-pgrep -x sxhkd > /dev/null || sxhkd &
-# Reload sxhkd configuration
-pkill -USR1 -x sxhkd
+$HOME/.config/sxhkd/launch.sh
 
 
 ########################

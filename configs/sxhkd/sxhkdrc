@@ -2,21 +2,9 @@
 # wm independent hotkeys
 #
 
-# terminal emulator
-super + Return
-	urxvtc
-
-# program launcher
-super + @space
-	rofi -show combi
-
-# make sxhkd reload its configuration files:
-super + r
-	pkill -USR1 -x sxhkd
-
-#
+##################
 # bspwm hotkeys
-#
+#################
 
 # quit/restart bspwm
 super + alt + {q,r}
@@ -58,9 +46,10 @@ super + ctrl + {m,x,y,z}
 super + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
 
-# focus the node for the given path jump
-super + {p,b,comma,period}
-	bspc node -f @{parent,brother,first,second}
+# Disabled. This focus are not that useful
+## focus the node for the given path jump
+#super + {p,b,comma,period}
+	#bspc node -f @{parent,brother,first,second}
 
 # focus the next/previous window in the current desktop
 super + {_,shift + }c
@@ -121,9 +110,30 @@ super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
 
-#
+##################
+# Main Applications (super combo)
+##################
+
+# terminal emulator
+super + Return
+	urxvtc
+
+# program launcher
+super + @space
+	rofi -show combi
+
+# passmenu launcher
+super + p
+	passmenu
+
+# make sxhkd reload its configuration files:
+super + r
+	pkill -USR1 -x sxhkd
+
+
+##################
 # Applications (super + ctrl + alt combos)
-#
+##################
 
 super + ctrl + alt + {Up,Down,m}
 	amixer set Master {5%+,5%-,toggle}
