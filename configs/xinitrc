@@ -25,7 +25,8 @@ blueman-applet &
 wal -R
 
 ############# OTHER SETTINGS ###########
-# None
+# https://www.reddit.com/r/bspwm/comments/3a5xuz/java_gui_not_fully_working/
+export _JAVA_AWT_WM_NONREPARENTING=1
 
 ############# STARTUP APPLICATIONS #########
 # Example: startup app after 10 secs from startx
