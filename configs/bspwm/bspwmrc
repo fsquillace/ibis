@@ -94,6 +94,7 @@ bspc rule -a Atom desktop='code' follow=on
 bspc rule -a Code desktop='code' follow=on
 bspc rule -a 'jetbrains-studio' desktop='code' follow=on
 bspc rule -a 'jetbrains-idea-ce' desktop='code' follow=on
+bspc rule -a 'jetbrains-pycharm-ce' desktop='code' follow=on
 bspc rule -a 'NetBeans IDE 8.2' desktop='code' follow=on
 bspc rule -a 'java-lang-Thread' desktop='code' follow=on
 
