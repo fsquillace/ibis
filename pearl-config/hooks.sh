@@ -78,6 +78,8 @@ pre_remove() {
 }
 
 _arch_linux_setup() {
+    # Based on the holy Archlinux wiki:
+    # https://wiki.archlinux.org/index.php/Installation_guide
     ls /usr/share/zoneinfo/*/*
     local region=$(input "Choose one of the time zone above (i.e. Europe/Madrid)" "UTC")
     sudo ln -sf /usr/share/zoneinfo/$region /etc/localtime

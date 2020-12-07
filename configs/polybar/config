@@ -254,6 +254,8 @@ bar-progress-empty = ─
 ; Default: %elapsed% / %total%
 label-time = %elapsed%/%total%
 
+host = ${env:MPD_HOSTNAME:localhost}
+
 [module/xbacklight]
 type = internal/xbacklight
 
@@ -292,7 +294,7 @@ type = custom/script
 
 label = "ﱘ"
 exec = echo music
-click-left = urxvtc -e ncmpcpp
+click-left = urxvtc -e ncmpcpp -h $MPD_HOSTNAME
 interval = 1000
 
 [module/cpu]
