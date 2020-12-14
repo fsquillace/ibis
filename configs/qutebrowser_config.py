@@ -779,6 +779,7 @@ c.auto_save.session = True
 ## default is used.
 ## Type: Directory
 # c.downloads.location.directory = None
+c.downloads.location.directory = "~/downloads"
 
 ## Prompt the user for the download location. If set to false,
 ## `downloads.location.directory` will be used.

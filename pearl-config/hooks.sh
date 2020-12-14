@@ -27,6 +27,7 @@ post_install() {
 
     mkdir -p $HOME/.local/bin
 
+    _configure_home_directory
     _configure_fonts install
     _configure_rofi install
     _configure_dunst install
@@ -77,6 +78,11 @@ pre_remove() {
     _configure_custom remove
 
     return 0
+}
+
+_configure_home_directory() {
+    mkdir -p $HOME/{downloads,music,images/wallpapers,documents,video}
+    cp ${PEARL_PKGDIR}/assets/wallpapers/* $HOME/images/wallpapers
 }
 
 _arch_linux_setup() {

@@ -32,10 +32,10 @@ bird which populates Sydney city.
 
 ## Screenshots
 
-![hollowknight](images/screenshot-hollowknight.png)
-![steamburn](images/screenshot-steamburn.png)
-![holo](images/screenshot-holo.png)
-![rainbow](images/screenshot-rainbow.png)
+![hollowknight](assets/screenshots/screenshot-hollowknight.png)
+![steamburn](assets/screenshots/screenshot-steamburn.png)
+![holo](assets/screenshots/screenshot-holo.png)
+![rainbow](assets/screenshots/screenshot-rainbow.png)
 
 ## Installation
 
