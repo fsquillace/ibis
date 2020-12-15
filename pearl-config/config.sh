@@ -3,7 +3,7 @@ alias pacman="pacman --color auto"
 
 PATH=$PATH:$HOME/.local/bin
 
-export MPD_HOSTNAME=localhost
+export MPD_HOST=localhost
 
 neofetch
 # vim: set ft=sh
