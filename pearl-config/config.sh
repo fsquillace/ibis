@@ -1,7 +1,7 @@
 
 alias pacman="pacman --color auto"
 
-PATH=$PATH:$HOME/.local/bin
+add_to_path $HOME/.local/bin
 
 export MPD_HOST=localhost
 
