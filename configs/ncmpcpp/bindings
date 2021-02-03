@@ -48,3 +48,6 @@ def_key ","
 #
 #def_key "G"
 #  jump_to_playlist_editor
+
+def_key "."
+    show_lyrics

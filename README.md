@@ -147,6 +147,7 @@ For the complete list of packages installed by Ibis take a look at
 
 ### System/Command line tools
 - bash-completion
+- bpytop
 - entr
 - font-manager
 - fzf
