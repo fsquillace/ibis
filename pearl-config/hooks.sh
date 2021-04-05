@@ -28,6 +28,7 @@ post_install() {
     mkdir -p $HOME/.local/bin
 
     _configure_home_directory
+    _configure_mdns install
     _configure_fonts install
     _configure_rofi install
     _configure_dunst install
@@ -64,6 +65,7 @@ pre_remove() {
         sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/aur-packages | xargs)
     fi
 
+    _configure_mdns remove
     _configure_fonts remove
     _configure_rofi remove
     _configure_dunst remove
@@ -78,6 +80,18 @@ pre_remove() {
     _configure_custom remove
 
     return 0
+}
+
+_configure_mdns() {
+    # Avahi provides local hostname resolution using a "hostname.local" naming scheme:
+    # https://wiki.archlinux.org/index.php/Avahi
+    if [[ $1 == "install" ]]
+    then
+        sudo sed -i -e 's/hosts:.*/hosts: files mymachines myhostname mdns4_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] dns/' /etc/nsswitch.conf
+    elif [[ $1 == "remove" ]]
+    then
+        sudo sed -i -e 's/hosts:.*/hosts: files mymachines myhostname resolve [!UNAVAIL=return] dns/' /etc/nsswitch.conf
+    fi
 }
 
 _configure_home_directory() {

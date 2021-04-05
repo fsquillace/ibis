@@ -1,6 +1,7 @@
 acpi
 arandr
 atool
+avahi
 bash-completion
 blueman
 bluez
@@ -28,6 +29,7 @@ ncmpcpp
 neofetch
 net-tools
 ntp
+nss-mdns
 openssh
 p7zip
 pacman-contrib
