@@ -1,7 +1,6 @@
 acpi
 arandr
 atool
-avahi
 bash-completion
 blueman
 bluez
@@ -29,7 +28,6 @@ ncmpcpp
 neofetch
 net-tools
 ntp
-nss-mdns
 openssh
 p7zip
 pacman-contrib
@@ -50,10 +48,11 @@ slock
 smplayer
 sudo
 sxhkd
+systemd-resolvconf
 tar
 tmux
-trash-cli
 transmission-cli
+trash-cli
 udiskie
 udisks2
 unrar
