@@ -28,7 +28,8 @@ post_install() {
     mkdir -p $HOME/.local/bin
 
     _configure_home_directory
-    _configure_dns install
+    # TODO:
+    #_configure_dns install
     _configure_fonts install
     _configure_rofi install
     _configure_dunst install
@@ -90,6 +91,7 @@ _configure_dns() {
         # The DHCP and VPN clients use the resolvconf program to set name servers and search domains
         # the additional package systemd-resolvconf is needed to provide the /usr/bin/resolvconf symlink.
         sudo mkdir -p /etc/systemd/resolved.conf.d
+        sudo mv /etc/resolv.conf /etc/resolv.conf.backup
         sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     elif [[ $1 == "remove" ]]
     then
@@ -431,7 +433,7 @@ _aur_setup() {
     done < $PEARL_PKGDIR/aur-packages
 
     # Meson is only needed for font-manager as make dependency
-    sudo pacman --noconfirm -Rsn meson
+    # TODO sudo pacman --noconfirm -Rsn meson
 
     return 0
 }

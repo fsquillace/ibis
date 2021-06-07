@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+# arch-travis installs yay-bin which conflicts with yay being installed by ibis.
+# Removing it here
+sudo pacman --noconfirm -Rsn yay-bin
+
+
+sudo python3 -m pip install pearl
+pearl init
+
+export USER=travis
+echo The User is $USER
+pwd
+whoami
+ls -l
+
+cat <<EOF >>  $HOME/.config/pearl/pearl.conf
+PEARL_PACKAGES = {
+    'ibis': {
+        "url": '$PWD',
+    },
+}
+EOF
+
+
+pearl -vv --no-confirm emerge ibis
