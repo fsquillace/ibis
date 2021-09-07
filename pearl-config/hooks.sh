@@ -3,6 +3,10 @@ IBIS_SETUP_PACKAGES=${IBIS_SETUP_PACKAGES:-true}
 post_install() {
     if $IBIS_SETUP_PACKAGES
     then
+        # This ensures to have the most up to date keys before installing any
+        # other packages
+        sudo pacman --noconfirm -Sy archlinux-keyring
+        sudo pacman-key --populate archlinux
         # Install packages
         sudo pacman --noconfirm -Syu
         sudo pacman --noconfirm -Sy $(cat $PEARL_PKGDIR/packages | xargs)
