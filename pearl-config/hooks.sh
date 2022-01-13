@@ -89,12 +89,18 @@ pre_remove() {
 _configure_dns() {
     if [[ $1 == "install" ]]
     then
-        # https://wiki.archlinux.org/index.php/Systemd-resolved
-        info "Systemd-resolved setup..."
-        # The DHCP and VPN clients use the resolvconf program to set name servers and search domains
-        # the additional package systemd-resolvconf is needed to provide the /usr/bin/resolvconf symlink.
-        sudo mkdir -p /etc/systemd/resolved.conf.d
-        sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+        info "Setting up resolvconf..."
+        # https://wiki.archlinux.org/title/Openresolv
+        sudo resolvconf -u
+
+        # The systemd resolve picks up the first available server and stick with it for any DNS requests.
+        # There is no correct fallback mechanism to allow checking on secondary DNS servers.
+        ## https://wiki.archlinux.org/index.php/Systemd-resolved
+        #info "Systemd-resolved setup..."
+        ## The DHCP and VPN clients use the resolvconf program to set name servers and search domains
+        ## the additional package systemd-resolvconf is needed to provide the /usr/bin/resolvconf symlink.
+        #sudo mkdir -p /etc/systemd/resolved.conf.d
+        #sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
     elif [[ $1 == "remove" ]]
     then
         sudo rm -rf /etc/resolv.conf
@@ -186,9 +192,6 @@ _systemd_services() {
     sudo systemctl $enablefuncname ntpd.service
     sudo systemctl $startfuncname transmission.service
     sudo systemctl $enablefuncname transmission.service
-
-    sudo systemctl $startfuncname systemd-resolved.service
-    sudo systemctl $enablefuncname systemd-resolved.service
 
     # https://wiki.archlinux.org/index.php/Pacman#Cleaning_the_package_cache
     sudo systemctl $startfuncname paccache.timer

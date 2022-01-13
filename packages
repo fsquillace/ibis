@@ -29,6 +29,7 @@ neofetch
 net-tools
 ntp
 openssh
+openresolv
 p7zip
 pacman-contrib
 pass
@@ -41,6 +42,7 @@ python-tldextract
 qutebrowser
 ranger
 rofi
+rofi-calc
 rsync
 rxvt-unicode
 scrot
@@ -48,7 +50,6 @@ slock
 smplayer
 sudo
 sxhkd
-systemd-resolvconf
 tar
 tmux
 transmission-cli
