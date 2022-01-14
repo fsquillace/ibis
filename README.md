@@ -100,7 +100,7 @@ For the complete list of packages installed by Ibis take a look at
 - gvim
 
 ### Browser
-- qutebrowser
+- firefox
 
 ### BitTorrent client
 - transmission-cli

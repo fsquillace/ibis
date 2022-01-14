@@ -41,7 +41,6 @@ post_install() {
     _configure_sxhkd install
     _configure_ncmpcpp install
     _configure_gpg install
-    _configure_qutebrowser install
     _configure_mpd install
     _configure_xinitrc install
     _configure_custom
@@ -78,7 +77,6 @@ pre_remove() {
     _configure_sxhkd remove
     _configure_ncmpcpp remove
     _configure_gpg remove
-    _configure_qutebrowser remove
     _configure_mpd remove
     _configure_xinitrc remove
     _configure_custom remove
@@ -342,29 +340,6 @@ _configure_sxhkd() {
 
     $linkfuncname $PEARL_PKGDIR/configs/sxhkd/sxhkdrc $HOME/.config/sxhkd/sxhkdrc
     $linkfuncname $PEARL_PKGDIR/configs/sxhkd/launch.sh $HOME/.config/sxhkd/launch.sh
-}
-
-
-_configure_qutebrowser() {
-    # Umpv is used together with qutebrowser for watching video:
-    # https://www.qutebrowser.org/doc/faq.html
-    if [[ $1 == "install" ]]
-    then
-        local applyfuncname=apply
-        cd $HOME/.local/bin
-        [[ -e umpv ]] && rm -rf umpv
-        download "https://github.com/mpv-player/mpv/raw/master/TOOLS/umpv"
-        chmod +x umpv
-        /usr/share/qutebrowser/scripts/dictcli.py install en-US
-        /usr/share/qutebrowser/scripts/dictcli.py install es-ES
-        /usr/share/qutebrowser/scripts/dictcli.py install it-IT
-    elif [[ $1 == "remove" ]]
-    then
-        local applyfuncname=unapply
-        rm -rf umpv
-    fi
-
-    $applyfuncname "exec(open('$PEARL_PKGDIR/configs/qutebrowser_config.py').read())" $HOME/.config/qutebrowser/config.py
 }
 
 _configure_mpd() {

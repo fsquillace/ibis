@@ -12,6 +12,7 @@ bspwm
 dunst
 eom
 entr
+firefox
 fzf
 gvim
 highlight
@@ -39,7 +40,6 @@ pulseaudio
 pulseaudio-bluetooth
 python-pywal
 python-tldextract
-qutebrowser
 ranger
 rofi
 rofi-calc
