@@ -1,6 +1,7 @@
 acpi
 arandr
 atool
+bandwhich
 bash-completion
 blueman
 bluez
@@ -51,6 +52,7 @@ smplayer
 sudo
 sxhkd
 tar
+tldr
 tmux
 transmission-cli
 trash-cli
@@ -67,7 +69,6 @@ xclip
 xorg-xinit
 xorg-xinput
 xorg-server
-youtube-dl
 zathura
 zathura-pdf-poppler
 zip

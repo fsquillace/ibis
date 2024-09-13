@@ -45,7 +45,7 @@ post_install() {
     _configure_xinitrc install
     _configure_custom
 
-    _systemd_services install
+    _other_systemd_services install
 
     # Information and manual changes
     info "Following steps requires manual changes"
@@ -62,7 +62,7 @@ post_update() {
 pre_remove() {
     if ask "Do you want to shutdown the services and remove all the packages from Ibis?" "N"
     then
-        _systemd_services remove
+        _other_systemd_services remove
 
         sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/packages | xargs)
         sudo pacman --noconfirm -Rsn $(cat $PEARL_PKGDIR/aur-packages | xargs)
@@ -87,20 +87,30 @@ pre_remove() {
 _configure_dns() {
     if [[ $1 == "install" ]]
     then
-        info "Setting up resolvconf..."
-        # https://wiki.archlinux.org/title/Openresolv
-        sudo resolvconf -u
-
         # The systemd resolve picks up the first available server and stick with it for any DNS requests.
         # There is no correct fallback mechanism to allow checking on secondary DNS servers.
-        ## https://wiki.archlinux.org/index.php/Systemd-resolved
-        #info "Systemd-resolved setup..."
-        ## The DHCP and VPN clients use the resolvconf program to set name servers and search domains
-        ## the additional package systemd-resolvconf is needed to provide the /usr/bin/resolvconf symlink.
-        #sudo mkdir -p /etc/systemd/resolved.conf.d
-        #sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+        # https://wiki.archlinux.org/index.php/Systemd-resolved
+        info "Systemd-resolved setup..."
+        # The DHCP and VPN clients use the resolvconf program to set name servers and search domains
+        # the additional package systemd-resolvconf is needed to provide the /usr/bin/resolvconf symlink.
+        sudo mkdir -p /etc/systemd/resolved.conf.d
+        sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+        sudo systemctl daemon-reload
+        sudo systemctl enable systemd-resolved.service
+        sudo systemctl start systemd-resolved.service
+
+        # An alternative DNS solution is resolvconf. Disabling for now.
+        #info "Setting up resolvconf..."
+        ## https://wiki.archlinux.org/title/Openresolv
+        #sudo resolvconf -u
+
     elif [[ $1 == "remove" ]]
     then
+        sudo systemctl daemon-reload
+        sudo systemctl disable systemd-resolved.service
+        sudo systemctl stop systemd-resolved.service
+
         sudo rm -rf /etc/resolv.conf
     fi
 
@@ -166,7 +176,7 @@ _configure_custom() {
     fi
 }
 
-_systemd_services() {
+_other_systemd_services() {
     if [[ $1 == "install" ]]
     then
         local enablefuncname=enable
