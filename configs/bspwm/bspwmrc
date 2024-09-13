@@ -9,7 +9,9 @@ set -ex
 # Make sure pywal run first in order to update the color palettes for
 # all other applications (i.e. dunst)
 mkdir -p $HOME/images/wallpapers
-wal -i $HOME/images/wallpapers
+# Disabling color changes in terminal. It is annoying/unproductive to get colors
+# being changed in terminal as it requires constant adaptation.
+wal -s -i $HOME/images/wallpapers
 
 $HOME/.config/polybar/launch.sh
 $HOME/.config/dunst/launch.sh
